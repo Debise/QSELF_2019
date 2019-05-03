@@ -84,25 +84,7 @@ dy2 = semi_to_degree(y2)
 # plt.show()
 
 
-
-
-
-# fig = plt.figure(figsize=(8, 8))
-# m = Basemap(projection='lcc', resolution=None,
-#             width=4E6, height=4E6, 
-#             lat_0=45, lon_0=6,)
-# m.etopo(scale=1, alpha=0.5)
-
-# Map (long, lat) to (x, y) for plotting
-# x, y = m(-122.3, 47.6)
-# plt.plot(x, y, 'ok', markersize=5)
-# plt.text(x, y, ' Seattle', fontsize=12);
-
-
-
-
-gmap3 = gmplot.GoogleMapPlotter(45, 
-                                6, 8) 
+gmap3 = gmplot.GoogleMapPlotter(np.mean(dx1), np.mean(dy1), 14)
   
 # scatter method of map object  
 # scatter points on the google map 
