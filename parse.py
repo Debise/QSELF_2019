@@ -47,10 +47,10 @@ fitfile_2 = os.path.join('activity/2019-04-28-16-54-19.fit')
 fit1_df = normalize_df(parse_it(fitfile_1))
 fit2_df = normalize_df(parse_it(fitfile_2))
 
-gmap3 = gmplot.GoogleMapPlotter(45, 6, 8)
-
 dx1, dy1 = fit1_df.position_lat.values, fit1_df.position_long.values
 dx2, dy2 = fit2_df.position_lat.values, fit2_df.position_long.values
+
+gmap3 = gmplot.GoogleMapPlotter(np.mean(dx1), np.mean(dy1), 14)
 
 # scatter method of map object  
 # scatter points on the google map 
