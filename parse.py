@@ -114,7 +114,7 @@ gmap3.scatter( dx1, dy1, '# FF0000',
 gmap3.plot(dx2, dy2,  
            'cornflowerblue', edge_width = 2.5) 
   
-gmap3.draw( "C:\\Users\\user\\Desktop\\map13.html" ) 
+gmap3.draw( "map.html" ) 
 
 # plt.plot(dx1,dy1,c="b")
 # plt.plot(dx2,dy2,c="r")
