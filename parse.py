@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 import gmplot 
-
+import matplotlib.pyplot as plt
 
 def parse_it(filename):
     fitfile = FitFile(filename)
@@ -40,27 +40,60 @@ def normalize_df(df):
 def semi_to_degree(s):
     return s * (180.0 / 2**31)
 
+def dist(ax, ay, bx, by):
 
-fitfile_1 = os.path.join('activity/2019-04-09-08-29-05.fit')
-fitfile_2 = os.path.join('activity/2019-04-28-16-54-19.fit')
+    return np.sum(np.power(ax-bx,2) + np.power(ay-by,2))
 
-fit1_df = normalize_df(parse_it(fitfile_1))
-fit2_df = normalize_df(parse_it(fitfile_2))
+def main():
 
-dx1, dy1 = fit1_df.position_lat.values, fit1_df.position_long.values
-dx2, dy2 = fit2_df.position_lat.values, fit2_df.position_long.values
-
-gmap3 = gmplot.GoogleMapPlotter(np.mean(dx1), np.mean(dy1), 14)
-
-# scatter method of map object  
-# scatter points on the google map 
-gmap3.scatter(dx1, dy1, '# FF0000', size=4, marker=False)
-  
-# Plot method Draw a line in between given coordinates
-gmap3.plot(dx2, dy2, 'cornflowerblue', edge_width=2.5)
-  
-gmap3.draw("output/map.html")
+    os.chdir("activity")
 
 
-print("Nb point:", len(dx1))
-print("Nb point:", len(dx2))
+    """ALL run on one plot"""
+    if 0:
+        gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
+        for filename in os.listdir(os.getcwd()):
+
+            df = parse_it(filename)
+            df_norm = normalize_df(df)
+            print(filename)
+
+            gmap3.plot(df_norm["position_lat"], df_norm["position_long"],'cornflowerblue', edge_width=2.5)
+            #gmap3.scatter(dx, dy, '# FF0000',size = 4, marker = False )
+
+        gmap3.draw("../output/all_run.html")
+
+    gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
+    df1 = parse_it("2018-11-29-18-09-16.fit")
+    df1 = normalize_df(df1)
+    df2 = parse_it("2018-12-20-16-42-55.fit")
+    df2 = normalize_df(df2)
+
+    gmap3.plot(df1["position_lat"], df1["position_long"], 'cornflowerblue', edge_width=2.5)
+    gmap3.plot(df2["position_lat"], df2["position_long"], 'green', edge_width=2.5)
+
+    x1 = np.array(df1["position_lat"])
+    y1 = np.array(df1["position_long"])
+    x2 = np.array(df2["position_lat"])
+    y2 = np.array(df2["position_long"])
+
+    # Traitement...
+    for i in range(x1.shape[0] - 10):
+
+        disti = dist(x1[i:i+10],y1[i:i+10],x2[100:110],y2[100:110])
+        plt.scatter(i,disti)
+
+        if disti<=0.000001:
+            gmap3.scatter(x1[i:i+10], y1[i:i+10], 'purple', size=4, marker=False)
+
+    plt.show()
+
+
+    gmap3.plot(x2[100:110],y2[100:110], 'red', edge_width=2.5)
+
+
+    gmap3.draw("../output/two_run.html")
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
