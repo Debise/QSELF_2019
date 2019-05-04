@@ -4,8 +4,10 @@ import numpy as np
 import pandas as pd
 import gmplot 
 import matplotlib.pyplot as plt
-import pickle
 import glob
+
+verbose = 0
+
 
 def parse_fit_file(filename):
     fitfile = FitFile(filename)
@@ -42,25 +44,60 @@ def normalize_df(df):
 def semi_to_degree(s):
     return s * (180.0 / 2**31)
 
-def dist(ax, ay, bx, by):
 
-    return np.sum(np.power(ax-bx,2) + np.power(ay-by,2))
+def parse_all_to_pickle(draw_all):
+
+    if draw_all:
+        gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13)
+
+    for filename in glob.glob("*.fit"):
+
+        pickle_file = "../pickle_activity/" + filename.replace('.fit', '.pkl')
+
+        if glob.glob(pickle_file):
+            #print(filename, ": already parsed")
+
+            if draw_all:
+                df_norm = pd.read_pickle(pickle_file)
+
+        else:
+            #print(filename, ": will be parsed")
+            df = parse_fit_file(filename)
+            df_norm = normalize_df(df)
+
+            df_norm.to_pickle(pickle_file)
+
+        if draw_all:
+            gmap3.plot(df_norm["position_lat"], df_norm["position_long"], 'cornflowerblue', edge_width=2.5)
+            # gmap3.scatter(dx, dy, '# FF0000', size=4, marker=False)  # too slow
+
+    if draw_all:
+        gmap3.draw("../output/all_run.html")
 
 def main():
 
     os.chdir("activity")
 
     """parse all fit file to pickle file and plot all on one map"""
-    parse_all_to_pickle()
+    parse_all_to_pickle(False)
 
-    """Compare two runs"""
-    if 0:
-        gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
-        df1 = parse_it("2019-02-18-18-02-48.fit")#("2018-11-29-18-09-16.fit")
-        df2 = parse_it("2018-12-20-16-42-55.fit")
+    os.chdir("../pickle_activity")
 
-        df1 = normalize_df(df1)
-        df2 = normalize_df(df2)
+    df1 = pd.read_pickle("2019-04-09-08-29-05.pkl")
+
+    # 2018-12-20-16-42-55.pkl
+    # 2019-03-12-08-32-49.pkl
+    # 2018-11-29-18-09-16.pkl
+
+    #2019-03-18-17-25-10.pkl
+    #filename = "2019-03-25-17-24-10.pkl"
+    #if 1:
+    for filename in glob.glob("*.pkl"):
+
+        df2 = pd.read_pickle(filename)
+        print(filename)
+
+        gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.5)
 
         gmap3.plot(df1["position_lat"], df1["position_long"], 'cornflowerblue', edge_width=2.5)
         gmap3.plot(df2["position_lat"], df2["position_long"], 'green', edge_width=2.5)
@@ -70,61 +107,54 @@ def main():
         x2 = np.array(df2["position_lat"])
         y2 = np.array(df2["position_long"])
 
+        c2 = np.array([x2, y2])
+        c1 = np.array([x1, y1])
+
+
         # Traitement...
 
-        SIZE = 20
+        SIZE = 10
         STEP = 5
 
         xi1 = np.zeros(x1.shape)
-        yi1 = np.zeros(y1.shape)
         xi2 = np.zeros(x2.shape)
-        yi2 = np.zeros(y2.shape)
 
         for i2 in range(0, x2.shape[0] - SIZE, STEP):
             #print(i2)
+
             for i1 in range(0, x1.shape[0] - SIZE, 1):
 
-                disti = dist(x1[i1:i1+SIZE],y1[i1:i1+SIZE],x2[i2:i2+SIZE],y2[i2:i2+SIZE])
-                #plt.scatter(i,disti)
+                dist2 = np.linalg.norm(c1[:, i1:i1+SIZE] - c2[:, i2:i2+SIZE])
 
-                if disti<=0.0000015:#0.000001:
+                if dist2 <= 0.00089443:
                     xi1[i1:i1 + SIZE] += 1
                     xi2[i2:i2 + SIZE] += 1
 
-                    #x = (x1[i1:i1+SIZE]+x2[i2:i2+SIZE]) /2
-                    #y = (y1[i1:i1+SIZE]+y2[i2:i2+SIZE]) / 2
 
-        gmap3.plot(x1[xi1>0], y1[xi1>0], 'red', edge_width=4)
+        """segment extractor (list of segment)"""
+        where = np.where(xi1 > 2)[0]
+        print("where:",where.shape)
+        #print(where)
 
-        #gmap3.plot(x, y, 'red', edge_width=4)
-        #gmap3.plot(x2[j:j + SIZE], y2[j:j + SIZE], 'red', edge_width=4)
+        # plt.scatter(where,where)
+        # plt.show()
 
+        diff = np.diff(where)>1
+        #print("diff:",diff)
 
-        gmap3.draw("../output/two_run.html")
-
-
-def parse_all_to_pickle():
-    gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
-    for filename in glob.glob("*.fit"):
-
-        pickle_file = "../pickle_activity/" + filename.replace('.fit', '.pkl')
-
-        if glob.glob(pickle_file):
-            print(filename, ": already parsed")
-
-            df_norm = pd.read_pickle(pickle_file)
+        if (diff==False).all():
+            splitted = [where]
 
         else:
-            print(filename, ": will be parsed")
-            df = parse_fit_file(filename)
-            df_norm = normalize_df(df)
+            sep = np.argwhere(diff).T[0]
+            print("separator:", sep)
+            splitted = np.split(where, sep + 1)
+            #print("splitted:", splitted)
 
-            df_norm.to_pickle(pickle_file)
+        for array in splitted:
+            gmap3.plot(x1[array], y1[array], 'red', edge_width=4)
 
-        gmap3.plot(df_norm["position_lat"], df_norm["position_long"], 'cornflowerblue', edge_width=2.5)
-        # gmap3.scatter(dx, dy, '# FF0000', size=4, marker=False)  # too slow
-    gmap3.draw("../output/all_run.html")
-
+        gmap3.draw("../output/" + filename + ".html")
 
 if __name__ == "__main__":
     # execute only if run as a script
