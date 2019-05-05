@@ -45,7 +45,7 @@ def semi_to_degree(s):
     return s * (180.0 / 2**31)
 
 
-def parse_all_to_pickle(draw_all):
+def parse_all_to_pickle(draw_all=False):
 
     if draw_all:
         gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13)
@@ -55,13 +55,13 @@ def parse_all_to_pickle(draw_all):
         pickle_file = "../pickle_activity/" + filename.replace('.fit', '.pkl')
 
         if glob.glob(pickle_file):
-            #print(filename, ": already parsed")
+            # print(filename, ": already parsed")
 
             if draw_all:
                 df_norm = pd.read_pickle(pickle_file)
 
         else:
-            #print(filename, ": will be parsed")
+            # print(filename, ": will be parsed")
             df = parse_fit_file(filename)
             df_norm = normalize_df(df)
 
@@ -75,55 +75,192 @@ def parse_all_to_pickle(draw_all):
         gmap3.draw("../output/all_run.html")
 
 
+def density_map():
+    os.chdir("../pickle_activity")
 
-def compare_all_vs_one():
+    gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.6)
+
+    df1 = pd.read_pickle("2019-04-09-08-29-05.pkl")  # all vs this one
+    all_runs = np.array(df1[["position_lat", "position_long"]]).T
+
+    for filename in glob.glob("*.pkl"):
+
+        if filename == "2019-04-09-08-29-05.pkl":
+            continue
+
+
+        df1 = pd.read_pickle(filename)
+
+        #print(filename)
+
+        c1 = np.array(df1[["position_lat", "position_long"]]).T
+
+        #print(c1.shape)
+
+        all_runs = np.append(all_runs, c1, axis=1)
+
+    print(all_runs.shape)
+
+    gmap3.plot(all_runs[0, :], all_runs[1, :], 'cornflowerblue', edge_width=2.5)
+
+    max_lat = np.max(all_runs[0, :])
+    max_long = np.max(all_runs[1, :])
+    min_lat = np.min(all_runs[0, :])
+    min_long = np.min(all_runs[1, :])
+
+    print(min_lat, min_long, max_lat, max_long)
+
+    delta_lat = max_lat - min_lat
+    delta_long = max_long - min_long
+
+    lat = np.linspace(min_lat, max_lat, 10)
+    long = np.linspace(min_long, max_long, 10)
+    xv, yv = np.meshgrid(lat, long, sparse=False, indexing='xy')
+
+    #gmap3.scatter(xv.flatten(), yv.flatten(), 'yellow')
+
+    weight = np.arange(10*10)
+
+    i=0
+    for x in lat:
+        i += 1
+
+        for y in long:
+            #from lat to (lat+delta) --> count nb point
+
+            #same for long
+
+            gmap3.scatter([x], [y], "red", size=int(weight[i*9]*2), marker=False)
+
+    gmap3.draw("../output/density.html")
+
+
+
+def compare_all_vs_one(verbose=0):
 
     os.chdir("../pickle_activity")
-    df1 = pd.read_pickle("2019-04-09-08-29-05.pkl")#all vs this one
+    df1 = pd.read_pickle("2019-04-09-08-29-05.pkl")  # all vs this one
 
     # 2018-12-20-16-42-55.pkl
     # 2019-03-12-08-32-49.pkl
     # 2018-11-29-18-09-16.pkl
     # 2019-03-18-17-25-10.pkl
 
+    all_segments = []
+
     filename = "2019-03-25-17-24-10.pkl"
-    if 1:
-    #for filename in glob.glob("*.pkl"):
+
+    #if 1:
+    for filename in glob.glob("*.pkl"):
+
+        if filename == "2019-04-09-08-29-05.pkl":
+            continue
 
         df2 = pd.read_pickle(filename)
-        print(filename)
+        if verbose:
+            print(filename)
 
         gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
 
         c1 = np.array(df1[["position_lat", "position_long"]]).T
         c2 = np.array(df2[["position_lat", "position_long"]]).T
 
-        gmap3.plot(c1[0,:], c1[1,:], 'cornflowerblue', edge_width=2.5)
-        gmap3.plot(c2[0,:], c2[1,:], 'green', edge_width=2.5)
+        gmap3.plot(c1[0, :], c1[1, :], 'cornflowerblue', edge_width=2.5)
+        gmap3.plot(c2[0, :], c2[1, :], 'green', edge_width=2.5)
 
+        # Traitment...
+        segments = extract_segment(c1, c2)
+        if verbose:
+            print("Number of segment found      :", len(segments))
+            print("Segment length               :", [i.shape[1] for i in segments])
 
-        # Traitement...
-        segment = extract_segment(c1, c2)
+        # drop segments shorter than 20
+        segments_filtered = [i for i in segments if i.shape[1] > 20]
 
-        #todo segment fusion or drop (if small split or too short)
+        all_segments.extend(segments_filtered)
 
-        #Plot segment
-        for array in segment:
-            gmap3.plot(c1[0,array], c1[1,array], 'red', edge_width=4)
+        if verbose:
+            print("Number of filtered segment   :", len(segments_filtered))
+            print("Filtered segment length      :", [i.shape[1] for i in segments_filtered])
+
+        # Plot segment
+        for segment in segments_filtered:
+            # gmap3.plot(c1[0,array], c1[1,array], 'red', edge_width=4)
+            gmap3.plot(segment[0, :], segment[1, :], 'red', edge_width=4)
 
         gmap3.draw("../output/" + filename + ".html")
+
+
+
+
+
+    # c1 = np.array(df1[["position_lat", "position_long"]]).T
+    # gmap3.plot(c1[0, :], c1[1, :], 'cornflowerblue', edge_width=2.5)
+    # print(all_segments[0].shape)
+    #
+    # match = extract_segment(c1, all_segments[0])
+    # #process_segments(all_segments)
+    #
+    # for segment in match:
+    #     gmap3.plot(segment[0, :], segment[1, :], 'red', edge_width=4)
+    #
+    # gmap3.draw("../output/" + "match" + ".html")
+
+
+# def process_segments(all_segments):
+#
+#     # Plot all segment
+#     gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
+#     for mean_trace in all_segments:
+#         gmap3.plot(mean_trace[0, :], mean_trace[1, :], 'red', edge_width=4)
+#     gmap3.draw("../output/" + "all_segments" + ".html")
+#
+#     print("Total number of segment         :", len(all_segments))
+#
+#     while(True):
+#
+#         remaining_seg = []
+#
+#         for segment_1 in all_segments:
+#             for segment_2 in all_segments:
+#                 if np.array_equal(segment_1, segment_2):
+#                     continue
+#
+#                 segments = extract_segment(segment_1, segment_2)
+#                 #if len(segments) > 0:
+#                 #    print("add", len(segments), "segments")
+#                 segments_filtered = [i for i in segments if i.shape[1] > 20]
+#                 remaining_seg.extend(segments_filtered)
+#
+#         [print(i.shape) for i in remaining_seg]
+#
+#         if len(remaining_seg) == len(all_segments):
+#             break
+#
+#         print("Remaining segments               :", len(remaining_seg), "over", len(all_segments)**2)
+#         all_segments = remaining_seg
+#
+#     print("idem potence")
+#
+#     gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
+#     for mean_trace in all_segments:
+#         gmap3.plot(mean_trace[0, :], mean_trace[1, :], 'red', edge_width=4)
+#     gmap3.draw("../output/" + "remaining_segments" + ".html")
 
 
 def extract_segment(c1, c2):
 
     SIZE = 10
     STEP = 5
-    xi1 = np.zeros(c1.shape[1])
-    xi2 = np.zeros(c2.shape[1])
+    c1_matched_c2 = np.zeros(c1.shape[1])
+    c2_matched_c1 = np.zeros(c2.shape[1])
 
-    print(c2.shape[1])
+    mean_trace = np.zeros(c1.shape)
+    #print(mean_trace.shape)
 
-    for i2 in range(0, c2.shape[1] - SIZE, STEP):
+    # print(c2.shape[1])
+
+    for i2 in range(0, c2.shape[1] - SIZE, STEP):  # todo ehh not optimal for:for...
         # print(i2)
 
         for i1 in range(0, c1.shape[1] - SIZE, 1):
@@ -131,26 +268,38 @@ def extract_segment(c1, c2):
             dist2 = np.linalg.norm(c1[:, i1:i1 + SIZE] - c2[:, i2:i2 + SIZE])
 
             if dist2 <= 0.00089443:
-                xi1[i1:i1 + SIZE] += 1
-                xi2[i2:i2 + SIZE] += 1
+                c1_matched_c2[i1:i1 + SIZE] += 1
+                c2_matched_c1[i2:i2 + SIZE] += 1
+
+                mean_trace[:, i1:i1 + SIZE] = (c1[:, i1:i1 + SIZE] + c2[:, i2:i2 + SIZE]) / 2
+
     """segment extractor (list of segment)"""
-    where = np.where(xi1 > 2)[0]
-    print("where:", where.shape)
+    where = np.where(c1_matched_c2 > 1)[0]  # change the "> x" for different robustness (bigger = robust , but split big segment into smaller)
+    # print("where:", where.shape)
+
     # print(where)
     # plt.scatter(where,where)
     # plt.show()
-    diff = np.diff(where) > 1
+    diff = np.diff(where) > 1  # 1 if perfectly contigus
     # print("diff:",diff)
     if (diff == False).all():
         splitted = [where]
 
     else:
         sep = np.argwhere(diff).T[0]
-        print("separator:", sep)
+        # print("separator:", sep)
         splitted = np.split(where, sep + 1)
         # print("splitted:", splitted)
 
-    return splitted
+
+    # ret= []
+    # for i in splitted:
+    #     print("i",i)
+    #     ret.append(mean_trace[:, i])
+
+    ret = [mean_trace[:, i] for i in splitted]
+
+    return ret
 
 
 def main():
@@ -160,7 +309,10 @@ def main():
     """parse all fit file to pickle file and plot all on one map"""
     parse_all_to_pickle(False)
 
-    compare_all_vs_one()
+    density_map()
+
+    #compare_all_vs_one()
+
 
 if __name__ == "__main__":
     # execute only if run as a script
