@@ -110,27 +110,40 @@ def density_map():
 
     print(min_lat, min_long, max_lat, max_long)
 
-    delta_lat = max_lat - min_lat
-    delta_long = max_long - min_long
+    inter = 50
 
-    lat = np.linspace(min_lat, max_lat, 10)
-    long = np.linspace(min_long, max_long, 10)
-    xv, yv = np.meshgrid(lat, long, sparse=False, indexing='xy')
+    delta_lat = (max_lat - min_lat) / inter
+    delta_long = (max_long - min_long) / inter
 
-    #gmap3.scatter(xv.flatten(), yv.flatten(), 'yellow')
+    lat = np.linspace(min_lat, max_lat, inter)
+    long = np.linspace(min_long, max_long, inter)
 
-    weight = np.arange(10*10)
+    all_latitude = all_runs[0, :]
+    all_longitude = all_runs[1, :]
+
+    print(all_longitude.shape)
+    print(all_latitude.shape)
 
     i=0
     for x in lat:
         i += 1
 
+        less = np.where(all_latitude >= (x-delta_lat/2))
+        more = np.where(all_latitude < (x + delta_lat / 2))
+        count_x = np.intersect1d(less,more)
+
         for y in long:
-            #from lat to (lat+delta) --> count nb point
 
-            #same for long
+            less = np.where(all_longitude >= (y - delta_long / 2))
+            more = np.where(all_longitude < (y + delta_long / 2))
+            count_y = np.intersect1d(less, more)
 
-            gmap3.scatter([x], [y], "red", size=int(weight[i*9]*2), marker=False)
+            valid_coordinate = np.intersect1d(count_x, count_y).shape[0]
+
+            #print(i, len(count_x), len(count_y), valid_coordinate)
+
+            if valid_coordinate != 0:
+                gmap3.scatter([x], [y], "red", size=np.sqrt([valid_coordinate])[0]*8, marker=False)
 
     gmap3.draw("../output/density.html")
 
