@@ -2,11 +2,8 @@ from fitparse import FitFile
 import os
 import numpy as np
 import pandas as pd
-import gmplot 
-import matplotlib.pyplot as plt
+import gmplot
 import glob
-
-verbose = 0
 
 
 def parse_fit_file(filename):
@@ -46,7 +43,6 @@ def semi_to_degree(s):
 
 
 def parse_all_to_pickle(draw_all=False):
-
     if draw_all:
         gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13)
 
@@ -55,21 +51,20 @@ def parse_all_to_pickle(draw_all=False):
         pickle_file = "../pickle_activity/" + filename.replace('.fit', '.pkl')
 
         if glob.glob(pickle_file):
-            # print(filename, ": already parsed")
+            # Already parsed
 
             if draw_all:
                 df_norm = pd.read_pickle(pickle_file)
 
         else:
-            # print(filename, ": will be parsed")
+            # Will be parsed
             df = parse_fit_file(filename)
             df_norm = normalize_df(df)
 
             df_norm.to_pickle(pickle_file)
 
         if draw_all:
-            gmap3.plot(df_norm["position_lat"], df_norm["position_long"], 'cornflowerblue', edge_width=2.5)
-            # gmap3.scatter(dx, dy, '# FF0000', size=4, marker=False)  # too slow
+            gmap3.plot(df_norm.position_lat, df_norm.position_long, 'cornflowerblue', edge_width=2.5)
 
     if draw_all:
         gmap3.draw("../output/all_run.html")
@@ -88,14 +83,9 @@ def density_map():
         if filename == "2019-04-09-08-29-05.pkl":
             continue
 
-
         df1 = pd.read_pickle(filename)
 
-        #print(filename)
-
         c1 = np.array(df1[["position_lat", "position_long"]]).T
-
-        #print(c1.shape)
 
         all_runs = np.append(all_runs, c1, axis=1)
 
@@ -148,22 +138,13 @@ def density_map():
     gmap3.draw("../output/density.html")
 
 
-
 def compare_all_vs_one(verbose=0):
 
     os.chdir("../pickle_activity")
-    df1 = pd.read_pickle("2019-04-09-08-29-05.pkl")  # all vs this one
-
-    # 2018-12-20-16-42-55.pkl
-    # 2019-03-12-08-32-49.pkl
-    # 2018-11-29-18-09-16.pkl
-    # 2019-03-18-17-25-10.pkl
+    df1 = pd.read_pickle("2019-04-09-08-29-05.pkl")  # All vs this one
 
     all_segments = []
 
-    filename = "2019-03-25-17-24-10.pkl"
-
-    #if 1:
     for filename in glob.glob("*.pkl"):
 
         if filename == "2019-04-09-08-29-05.pkl":
@@ -181,13 +162,13 @@ def compare_all_vs_one(verbose=0):
         gmap3.plot(c1[0, :], c1[1, :], 'cornflowerblue', edge_width=2.5)
         gmap3.plot(c2[0, :], c2[1, :], 'green', edge_width=2.5)
 
-        # Traitment...
+        # Treatment...
         segments = extract_segment(c1, c2)
         if verbose:
             print("Number of segment found      :", len(segments))
             print("Segment length               :", [i.shape[1] for i in segments])
 
-        # drop segments shorter than 20
+        # Drop segments shorter than 20
         segments_filtered = [i for i in segments if i.shape[1] > 20]
 
         all_segments.extend(segments_filtered)
@@ -198,26 +179,9 @@ def compare_all_vs_one(verbose=0):
 
         # Plot segment
         for segment in segments_filtered:
-            # gmap3.plot(c1[0,array], c1[1,array], 'red', edge_width=4)
             gmap3.plot(segment[0, :], segment[1, :], 'red', edge_width=4)
 
         gmap3.draw("../output/" + filename + ".html")
-
-
-
-
-
-    # c1 = np.array(df1[["position_lat", "position_long"]]).T
-    # gmap3.plot(c1[0, :], c1[1, :], 'cornflowerblue', edge_width=2.5)
-    # print(all_segments[0].shape)
-    #
-    # match = extract_segment(c1, all_segments[0])
-    # #process_segments(all_segments)
-    #
-    # for segment in match:
-    #     gmap3.plot(segment[0, :], segment[1, :], 'red', edge_width=4)
-    #
-    # gmap3.draw("../output/" + "match" + ".html")
 
 
 # def process_segments(all_segments):
@@ -269,8 +233,8 @@ def extract_segment(c1, c2):
     c2_matched_c1 = np.zeros(c2.shape[1])
 
     mean_trace = np.zeros(c1.shape)
-    #print(mean_trace.shape)
 
+    # print(mean_trace.shape)
     # print(c2.shape[1])
 
     for i2 in range(0, c2.shape[1] - SIZE, STEP):  # todo ehh not optimal for:for...
@@ -295,7 +259,7 @@ def extract_segment(c1, c2):
     # plt.show()
     diff = np.diff(where) > 1  # 1 if perfectly contigus
     # print("diff:",diff)
-    if (diff == False).all():
+    if (diff is False).all():
         splitted = [where]
 
     else:
@@ -320,9 +284,9 @@ def main():
     os.chdir("activity")
 
     """parse all fit file to pickle file and plot all on one map"""
-    parse_all_to_pickle(False)
+    # parse_all_to_pickle(False)
 
-    density_map()
+    # density_map()
 
     #compare_all_vs_one()
 

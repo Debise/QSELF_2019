@@ -12,6 +12,7 @@ numpy = "*"
 gmplot = "*"
 pandas = "*"
 pickle-mixin = "*"
+pickle = "*"
 
 [requires]
 python_version = "3.6"
