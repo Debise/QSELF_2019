@@ -64,5 +64,3 @@ class RaceManager:
             race_comparator.draw()
             self.race_comparators[race_comparator.name] = race_comparator
             print(race_comparator)
-
-            break
