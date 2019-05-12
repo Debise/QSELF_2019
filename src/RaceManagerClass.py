@@ -22,13 +22,12 @@ class RaceManager:
 
         os.chdir("..")
 
-    def save(self, re_parse=False):
+    def save(self):
         os.chdir("pickle_class")
 
         filename = "RaceManager.pkl"
 
-        if re_parse:
-            pickle.dump(self, open(filename, "wb"))
+        pickle.dump(self, open(filename, "wb"))
 
         os.chdir("..")
 

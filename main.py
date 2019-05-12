@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     race_manager = RaceManager()
     # race_manager.read_all_races()
-    # race_manager.save(re_parse=True)
+    # race_manager.save()
     race_manager.load()
 
     for i, point in enumerate(race_manager.races[race_name].points):
@@ -33,3 +33,4 @@ if __name__ == '__main__':
 
     # referential_race_name = "2019-04-09-08-29-05"  # All vs this one
     # race_manager.compare_all_vs_one(referential_race_name)
+    race_manager.save()
