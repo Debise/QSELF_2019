@@ -60,15 +60,9 @@ class RaceManager:
 
             if verbose:
                 print("Number of segment found      :", len(segments))
-                print("Segment length               :", [i.shape[1] for i in segments])
 
-            # Drop segments shorter than 20
-            segments_filtered = [i for i in segments if i.shape[1] > 20]
-
-            if verbose:
-                print("Number of filtered segment   :", len(segments_filtered))
-                print("Filtered segment length      :", [i.shape[1] for i in segments_filtered])
-
-            race_comparator.segments = segments_filtered
             race_comparator.draw()
             self.race_comparators[race_comparator.name] = race_comparator
+            print(race_comparator)
+
+            break
