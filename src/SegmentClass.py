@@ -46,3 +46,4 @@ class Segment:
 
     def draw(self, color, gmap3):
         gmap3.plot(self.positions[0, :], self.positions[1, :], color, edge_width=4)
+
