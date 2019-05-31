@@ -1,7 +1,13 @@
 from src.segment import Segment
+import os
 import numpy as np
 import settings as st
-import gmplot
+from gmplot import GoogleMapPlotter
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 
 
 class RaceComparator:
@@ -88,7 +94,7 @@ class RaceComparator:
             self.segments.append(Segment(positions, timestamps1, timestamps2, self.race1.points, self.race2.points))
 
     def draw(self):
-        gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
+        gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
 
         self.race1.draw(color='cornflowerblue', gmap3=gmap3)
         self.race2.draw(color='green', gmap3=gmap3)

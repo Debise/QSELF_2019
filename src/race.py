@@ -1,8 +1,13 @@
 from src.point import Point
 from fitparse import FitFile
-import gmplot
+import os
 import pandas as pd
-import numpy as np
+from gmplot import GoogleMapPlotter
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 
 
 class Race:
@@ -42,7 +47,7 @@ class Race:
 
     def draw(self, color='cornflowerblue', gmap3=None):
         if gmap3 is None:
-            gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13)
+            gmap3 = GoogleMapPlotter(46.98, 6.89, 13, apikey=GOOGLE_MAP_API_KEY)
 
         gmap3.plot(self.df.position_lat, self.df.position_long, color, edge_width=2.5)
 

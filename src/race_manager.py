@@ -5,8 +5,13 @@ import glob
 import pickle
 import os
 import numpy as np
-import gmplot
+from gmplot import GoogleMapPlotter
 import settings as st
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 
 
 class RaceManager:
@@ -70,7 +75,6 @@ class RaceManager:
         self.all_seg_of_one_race[referential_race_name] = all_segment
 
     def segment_density(self, referential_race_name, verbose=0):
-
         all_segments = list(self.all_seg_of_one_race[referential_race_name])
 
         points = np.array(all_segments[0].positions[:2, :])
@@ -121,8 +125,6 @@ class RaceManager:
                         density[2, i] = density[2, i] + 1
 
                 i += 1
-
-        #####
 
         # repasser tous les segment et ajouter leur propre densité max,min,mean pour chacun
         max_seg_density = dict()
@@ -180,8 +182,8 @@ class RaceManager:
         # print(seg_present_in)
         # print(mean_seg_density)
 
-        ### Print denstiy seg map
-        gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
+        # Print denstiy seg map
+        gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
 
         self.races[referential_race_name].draw(color='cornflowerblue', gmap3=gmap3)
 

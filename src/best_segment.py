@@ -1,9 +1,13 @@
 import numpy as np
-from src.segment import Segment
 from src.segment_comparator import SegmentComparator
-import gmplot
-import os
 import settings as st
+from gmplot import GoogleMapPlotter
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 
 
 class BestSegment:
@@ -133,7 +137,7 @@ class BestSegment:
                     segments_with_run_name = [(name, i) for i in segments_filtered]
                     remaining_seg.extend(segments_with_run_name)
 
-                    # todo ~~ garder les plsu court avec le plus de densité...
+                    # todo ~~ garder les plus court avec le plus de densité...
 
             # print("Remaining segments               :", len(remaining_seg))
 
@@ -201,11 +205,11 @@ class BestSegment:
         return deniv_segment
 
     def draw(self):
-        if self.deniv_segment == 0 or self.length_segment == 0 or self.deniv_segment == 0:
+        if self.deniv_segment is None or self.length_segment is None or self.deniv_segment is None:
             print("Need to call all 3 get_..._segment before draw()")
             return -1
 
-        gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
+        gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
 
         self.length_segment.draw('purple', gmap3=gmap3)
         self.density_segment.draw('red', gmap3=gmap3)
