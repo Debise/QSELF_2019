@@ -91,7 +91,10 @@ class RaceComparator:
             self.segments.append(Segment(positions, timestamps1, timestamps2, self.race1.points, self.race2.points))
 
     def draw(self):
-        gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
+        if GOOGLE_MAP_API_KEY is None:
+            gmap3 = GoogleMapPlotter(46.98, 6.89, 14)
+        else:
+            gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
 
         self.race1.draw(color='cornflowerblue', gmap3=gmap3)
         self.race2.draw(color='green', gmap3=gmap3)

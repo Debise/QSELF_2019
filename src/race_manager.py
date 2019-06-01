@@ -23,6 +23,12 @@ class RaceManager:
         self.race_mean_seg_density = {}
         self.race_density_delta = {}
 
+        # best segment for each race
+        self.best_density_segment = {}
+        self.best_denivelation_segment = {}
+        self.best_length_segment = {}
+
+
     def read_all_races(self):
         activity_folder = st.files["activity_folder"]
 
@@ -181,7 +187,10 @@ class RaceManager:
         # print(mean_seg_density)
 
         # Print denstiy seg map
-        gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
+        if GOOGLE_MAP_API_KEY is None:
+            gmap3 = GoogleMapPlotter(46.98, 6.89, 14)
+        else:
+            gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
 
         self.races[referential_race_name].draw(color='cornflowerblue', gmap3=gmap3)
 
@@ -227,6 +236,8 @@ class RaceManager:
         # print(len(best_length_segment.points1))
         # print(len(best_density_segment.points1))
 
-        # TODO save these seg as argument...
+        self.best_density_segment[referential_race_name] = best_density_segment
+        self.best_denivelation_segment[referential_race_name] = best_denivelation_segment
+        self.best_length_segment[referential_race_name] = best_length_segment
 
         bestSegment.draw()

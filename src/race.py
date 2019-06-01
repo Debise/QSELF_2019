@@ -1,6 +1,7 @@
 from src.point import Point
 from fitparse import FitFile
 import os
+import numpy as np
 import pandas as pd
 from gmplot import GoogleMapPlotter
 import settings as st
@@ -45,12 +46,14 @@ class Race:
 
     def draw(self, color='cornflowerblue', gmap3=None):
         if gmap3 is None:
-            gmap3 = GoogleMapPlotter(46.98, 6.89, 13, apikey=GOOGLE_MAP_API_KEY)
+            if GOOGLE_MAP_API_KEY is None:
+                gmap3 = GoogleMapPlotter(46.98, 6.89, 14)
+            else:
+                gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
 
         gmap3.plot(self.df.position_lat, self.df.position_long, color, edge_width=2.5)
 
         filename = os.path.join(st.files["output_folder"], f"{self.name}.html")
-
         gmap3.draw(filename)
 
     def get_statistics(self, verbose=False):
@@ -67,8 +70,14 @@ class Race:
 
         heights_difference = self.df.altitude.max() - self.df.altitude.min()
 
+        derivative = np.diff(np.array(self.df.altitude))
+        derivative[derivative < 0] = 0
+        positive_denivelation = np.sum(derivative)#only positive !
+
         distance = self.points[-1].distance
         km_distance = distance/1000
+
+        average_heart_rate = self.df.heart_rate.mean()
 
         if verbose:
             print(f"{minutes} minutes")
@@ -77,7 +86,9 @@ class Race:
             print(f"min speed : {min_speed} m/s")
             print(f"std speed : {std_speed}")
             print(f"heights_difference : {heights_difference} m")
+            print(f"positive denivelation : {positive_denivelation} m")
             print(f"distance : {distance} m")
+            print(f"average HR : {average_heart_rate} bpm")
 
         stats = {
             'Race time': hours_str,
@@ -86,7 +97,9 @@ class Race:
             'Min speed': f'{min_speed:.2f} m/s ({(min_speed * 3.6):.2f} km/h)',
             'Speed standard deviation': f'{std_speed:.2f}',
             'Heights difference': f'{heights_difference:.2f} m',
-            'Total distance': f'{distance} m ({km_distance:.2f} km)'
+            'Positive denivelation': f'{positive_denivelation:.2f} m',
+            'Total distance': f'{distance} m ({km_distance:.2f} km)',
+            'Average HR': f'{average_heart_rate:.2f} bpm'
         }
 
         return stats

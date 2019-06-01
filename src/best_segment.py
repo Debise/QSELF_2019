@@ -47,12 +47,6 @@ class BestSegment:
         max_length_seg = max(length_dict, key=lambda k: length_dict[k])
         length_segment = [segment for (name, segment) in new_all_segments if name == max_length_seg][0]
 
-        # print(">>", max_length_seg, length_dict[max_length_seg])
-
-        # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
-        # gmap3.plot(length_segment[0, :], length_segment[1, :], 'red', edge_width=4)
-        # gmap3.draw("../output/" + "length_segment" + ".html")
-
         self.length_segment = length_segment
         return length_segment
 
@@ -157,14 +151,6 @@ class BestSegment:
             density_segment = [segment for (name, segment) in all_segments if name == max_density_seg][0]
             # print(density_segment.positions.shape)
 
-        # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
-        # for (name, mean_trace) in all_segments:
-        #     gmap3.plot(mean_trace[0, :], mean_trace[1, :], 'purple', edge_width=4)
-
-        # gmap3.plot(density_segment[0, :], density_segment[1, :], 'red', edge_width=4)
-
-        # gmap3.draw("../output/" + "density_segment" + ".html")
-
         self.density_segment = density_segment
         return density_segment
 
@@ -192,21 +178,18 @@ class BestSegment:
         max_deniv_seg = max(deniv_dict, key=lambda k: deniv_dict[k])
         deniv_segment = [segment for (name, segment) in new_all_segments if name == max_deniv_seg][0]
 
-        # print(">>",max_deniv_seg, deniv_dict[max_deniv_seg])
-
-        # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 14)
-        # gmap3.plot(deniv_segment[0, :], deniv_segment[1, :], 'red', edge_width=4)
-        # gmap3.draw("../output/" + "deniv_segment" + ".html")
-
         self.deniv_segment = deniv_segment
         return deniv_segment
 
     def draw(self):
-        if self.deniv_segment is None or self.length_segment is None or self.deniv_segment is None:
+        if self.density_segment is None or self.length_segment is None or self.deniv_segment is None:
             print("Need to call all 3 get_..._segment before draw()")
             return -1
 
-        gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
+        if GOOGLE_MAP_API_KEY is None:
+            gmap3 = GoogleMapPlotter(46.98, 6.89, 14)
+        else:
+            gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
 
         self.length_segment.draw('purple', gmap3=gmap3)
         self.density_segment.draw('red', gmap3=gmap3)
@@ -240,11 +223,6 @@ class BestSegment:
         max_long = np.max(points[1, :])
         min_lat = np.min(points[0, :])
         min_long = np.min(points[1, :])
-
-        # print(min_lat, min_long, max_lat, max_long)
-
-        # delta_lat = (max_lat - min_lat) / division_interval
-        # delta_long = (max_long - min_long) / division_interval
 
         delta = 0.0005
 
