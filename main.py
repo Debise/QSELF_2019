@@ -1,5 +1,4 @@
 from src.race_manager import RaceManager
-from src.race import Race
 
 if __name__ == '__main__':
 
@@ -20,7 +19,6 @@ if __name__ == '__main__':
             race_manager.race_vs_segments(race_name)
 
         race_manager.save()
-
     else:
         race_manager = race_manager.load()
 

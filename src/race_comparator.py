@@ -3,9 +3,6 @@ import os
 import numpy as np
 import settings as st
 from gmplot import GoogleMapPlotter
-from dotenv import load_dotenv
-
-load_dotenv()
 
 GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 

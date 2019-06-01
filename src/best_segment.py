@@ -3,9 +3,6 @@ from src.segment_comparator import SegmentComparator
 import settings as st
 from gmplot import GoogleMapPlotter
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 

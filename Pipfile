@@ -10,9 +10,9 @@ fitparse = "*"
 matplotlib = "*"
 numpy = "*"
 gmplot = "*"
-flask = "*"
 pandas = "*"
 python-dotenv = "*"
+flask = "*"
 
 [requires]
 python_version = "3.6"

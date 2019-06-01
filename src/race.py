@@ -3,9 +3,7 @@ from fitparse import FitFile
 import os
 import pandas as pd
 from gmplot import GoogleMapPlotter
-from dotenv import load_dotenv
-
-load_dotenv()
+import settings as st
 
 GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 
@@ -51,13 +49,16 @@ class Race:
 
         gmap3.plot(self.df.position_lat, self.df.position_long, color, edge_width=2.5)
 
-        if gmap3 is None:
-            filename = "output/{}.html".format(self.name)
-            gmap3.draw(filename)
+        filename = os.path.join(st.files["output_folder"], f"{self.name}.html")
 
-    def get_statistics(self, verbose=True):
+        gmap3.draw(filename)
+
+    def get_statistics(self, verbose=False):
         race_time = self.points[-1].timestamp - self.points[0].timestamp
         minutes = race_time.seconds / 60
+        hours = minutes / 60
+
+        hours_str = f'{int(hours)} hour(s) and {(minutes - (int(hours) * 60)):.2f} minutes'
 
         average_speed = self.df.speed.mean()
         max_speed = self.df.speed.max()
@@ -66,7 +67,8 @@ class Race:
 
         heights_difference = self.df.altitude.max() - self.df.altitude.min()
 
-        distances_sum = self.points[-1].distance
+        distance = self.points[-1].distance
+        km_distance = distance/1000
 
         if verbose:
             print(f"{minutes} minutes")
@@ -75,7 +77,19 @@ class Race:
             print(f"min speed : {min_speed} m/s")
             print(f"std speed : {std_speed}")
             print(f"heights_difference : {heights_difference} m")
-            print(f"distance sum : {distances_sum} m")
+            print(f"distance : {distance} m")
+
+        stats = {
+            'Race time': hours_str,
+            'Average speed': f'{average_speed:.2f} m/s ({(average_speed * 3.6):.2f} km/h)',
+            'Max speed': f'{max_speed:.2f} m/s ({(max_speed * 3.6):.2f} km/h)',
+            'Min speed': f'{min_speed:.2f} m/s ({(min_speed * 3.6):.2f} km/h)',
+            'Speed standard deviation': f'{std_speed:.2f}',
+            'Heights difference': f'{heights_difference:.2f} m',
+            'Total distance': f'{distance} m ({km_distance:.2f} km)'
+        }
+
+        return stats
 
     @staticmethod
     def normalize_df(df):

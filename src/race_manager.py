@@ -7,9 +7,6 @@ import os
 import numpy as np
 from gmplot import GoogleMapPlotter
 import settings as st
-from dotenv import load_dotenv
-
-load_dotenv()
 
 GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 
@@ -133,7 +130,8 @@ class RaceManager:
         seg_present_in = dict()
 
         for segment in all_segments:
-            seg_name = segment.times1[0]  # FIXME convention --> le nom du segment c'est le timestamp de début de la course 1 (devrait ^etre unique)
+            seg_name = segment.times1[
+                0]  # FIXME convention --> le nom du segment c'est le timestamp de début de la course 1 (devrait ^etre unique)
             min_seg_density[seg_name] = 100
             max_seg_density[seg_name] = 0
             mean_seg_density[seg_name] = 0
