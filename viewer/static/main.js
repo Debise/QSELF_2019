@@ -27,7 +27,7 @@ function filter_arrays(y_array, x_array) {
     return array;
 }
 
-function plot_graph(div, f_append, name, unit, y_array, x_array, color) {
+function plot_graph(container, f_append, name, unit, y_array, x_array, color) {
 
     let data = filter_arrays(y_array, x_array);
 
@@ -77,19 +77,17 @@ function plot_graph(div, f_append, name, unit, y_array, x_array, color) {
         }
     };
 
-    let id_name = name + "_" + div;
+    let canvas = $('<canvas>').attr("width", "450").attr("height", "450");
 
-    let canvas = $('<canvas>').attr("id", id_name);
+    f_append(canvas, container);
 
-    f_append(canvas, div);
-
-    let ctx = id_name;
-
-    window.myLine = new Chart(ctx, config);
+    window.myLine = new Chart(canvas, config);
 }
 
-function show_stats() {
-    $('#nav-stats').empty();
+function call_stats(container, f_append, table_class) {
+
+    container.find(".table-stats").empty();
+    container.find(".graphs-stats").empty();
 
     var url = "/race-detail/statistics";
     var FD = new FormData();
@@ -131,40 +129,45 @@ function show_stats() {
 
         table.append(tbody);
 
-        let container = $('<div>').addClass("container-full").attr("id", "stats_content");
-
-        let row = $('<div>').addClass("row");
-        let col = $('<div>').addClass("col-12");
-
-        let div_id = "stats_graphs";
-        let row_graphs = $('<div>').addClass("row justify-content-center").attr("id", div_id);
+        let row_table = container.find('.table-stats');
+        let col = $('<div>').addClass(table_class);
 
         col.append(table);
-        row.append(col);
+        row_table.append(col);
 
-        container.append(row);
-        container.append(row_graphs);
-
-        $('#nav-stats').append(container);
-
-        function f_append(canvas, div) {
-            let col = $('<div>').addClass("col-3");
-            col.append(canvas);
-            $("#" + div).append(col);
-        }
-
-        plot_graph(div_id, f_append, "Speed", "(km/h)", speeds, distances, window.chartColors.red);
-        plot_graph(div_id, f_append, "BPM", "", bpms, distances, window.chartColors.blue);
-        plot_graph(div_id, f_append, "Height", "(m)", heights, distances, window.chartColors.green);
+        plot_graph(container, f_append, "Speed", "(km/h)", speeds, distances, window.chartColors.red);
+        plot_graph(container, f_append, "BPM", "", bpms, distances, window.chartColors.blue);
+        plot_graph(container, f_append, "Height", "(m)", heights, distances, window.chartColors.green);
     });
 }
 
+function show_stats() {
+    var container = $("#container-stats");
+
+    function f_append(canvas) {
+        let row = container.find(".graphs-stats");
+        let col = $('<div>').addClass("col-3");
+        col.append(canvas);
+        row.append(col);
+    }
+
+    call_stats(container, f_append, "col-12")
+}
+
 function show_comparison() {
-    $('#nav-comparison').empty();
+    var container = $("#container-comparison");
+    container.css("display", "flex");
 
-    var head_title = $('<h3>').text("Comparison of " + race_name + " with others");
+    function f_append(canvas) {
+        let row = $('<div>').addClass("row");
+        let col = $('<div>').addClass("col-8");
+        col.css("margin-left", "8%");
+        col.append(canvas);
+        row.append(col);
+        container.find(".graphs-stats").append(row);
+    }
 
-    $('#nav-comparison').append(head_title);
+    call_stats(container, f_append, "col-10");
 }
 
 function show_visualisation() {

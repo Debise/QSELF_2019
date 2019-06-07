@@ -6,3 +6,13 @@ body,html{
   margin: 0 auto;
   width: 100%;
 }
+
+.left-half {
+  flex: 1;
+  padding: 1rem;
+}
+
+.right-half {
+  flex: 1;
+  padding: 1rem;
+}
