@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     #####
 
-    race_inferer = RaceInferer(race_manager)
+    race_inferer = RaceInferer()
 
     """Inferring the best segment of all race take more than """
     if infer_all:

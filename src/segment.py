@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Segment:
 
     def __init__(self, positions, times1, times2, points1, points2):
@@ -49,8 +50,7 @@ class Segment:
     def draw(self, color, gmap3):
         gmap3.plot(self.positions[0, :], self.positions[1, :], color, edge_width=4)
 
-    
-    def get_statistics(self,from_race = 1, verbose=False):
+    def get_statistics(self, from_race=1, verbose=False):
 
         if from_race == 1:
             points = self.points1
@@ -73,10 +73,10 @@ class Segment:
 
         derivative = np.diff(altitude_array)
         derivative[derivative < 0] = 0
-        positive_denivelation = np.sum(derivative)#only positive !
+        positive_denivelation = np.sum(derivative)  # only positive !
 
         distance = points[-1].distance - points[0].distance
-        km_distance = distance/1000
+        km_distance = distance / 1000
 
         heart_rate_array = np.array([i.heart_rate for i in points])
         average_heart_rate = np.mean(heart_rate_array)

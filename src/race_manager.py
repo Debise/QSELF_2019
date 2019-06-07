@@ -28,7 +28,6 @@ class RaceManager:
         self.best_denivelation_segment = {}
         self.best_length_segment = {}
 
-
     def read_all_races(self):
         activity_folder = st.files["activity_folder"]
 
@@ -136,8 +135,8 @@ class RaceManager:
         seg_present_in = dict()
 
         for segment in all_segments:
-            seg_name = segment.times1[
-                0]  # FIXME convention --> le nom du segment c'est le timestamp de début de la course 1 (devrait ^etre unique)
+            # FIXME convention --> le nom du segment c'est le timestamp de début de la course 1 (devrait ^etre unique)
+            seg_name = segment.times1[0]
             min_seg_density[seg_name] = 100
             max_seg_density[seg_name] = 0
             mean_seg_density[seg_name] = 0

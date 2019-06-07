@@ -67,15 +67,19 @@ class Race:
         max_speed = self.df.speed.max()
         min_speed = self.df.speed[self.df.speed != 0].min()
         std_speed = self.df.speed.std()
+        distances = [d / 1000 for d in self.df.distance.values.tolist()]
+        speeds = [s * 3.6 for s in self.df.speed.values.tolist()]
+        bpms = self.df.heart_rate.values.tolist()
+        heights = self.df.altitude.values.tolist()
 
         heights_difference = self.df.altitude.max() - self.df.altitude.min()
 
         derivative = np.diff(np.array(self.df.altitude))
         derivative[derivative < 0] = 0
-        positive_denivelation = np.sum(derivative)#only positive !
+        positive_denivelation = np.sum(derivative)  # only positive !
 
         distance = self.points[-1].distance
-        km_distance = distance/1000
+        km_distance = distance / 1000
 
         average_heart_rate = self.df.heart_rate.mean()
 
@@ -99,7 +103,11 @@ class Race:
             'Heights difference': f'{heights_difference:.2f} m',
             'Positive denivelation': f'{positive_denivelation:.2f} m',
             'Total distance': f'{distance} m ({km_distance:.2f} km)',
-            'Average HR': f'{average_heart_rate:.2f} bpm'
+            'Average HR': f'{average_heart_rate:.2f} bpm',
+            'distances': distances,
+            'speeds': speeds,
+            'bpms': bpms,
+            'heights': heights
         }
 
         return stats

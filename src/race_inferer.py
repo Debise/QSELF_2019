@@ -1,7 +1,6 @@
-import numpy as np
 from src.segment_comparator import SegmentComparator
 from src.race_comparator import RaceComparator
-from src.segment import Segment
+from src.race_manager import RaceManager
 import settings as st
 import pickle
 from gmplot import GoogleMapPlotter
@@ -15,14 +14,13 @@ GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 
 class RaceInferer:
 
-    def __init__(self, race_manager):
+    def __init__(self):
 
-        self.race_manager = race_manager
+        self.race_manager = RaceManager().load()
 
-        self.deniv_segment = {} # each entry (for a given refRace) contains a tuple (matchingRaceName, MatchingSegment)
+        self.deniv_segment = {}  # each entry (for a given refRace) contains a tuple (matchingRaceName, MatchingSegment)
         self.length_segment = {}
         self.density_segment = {}
-
 
     def save(self):
         filename = os.path.join(st.files["pickle_class_folder"], "RaceInferer.pkl")
@@ -35,96 +33,92 @@ class RaceInferer:
 
         return race_inferer
 
-
     def find_race_deniv(self, referential_race_name):
 
         matching_race_segment = []
 
         deniv_seg = self.race_manager.best_denivelation_segment[referential_race_name]
-        #print(">> Seg deniv length:", len(deniv_seg.points1))
+        # print(">> Seg deniv length:", len(deniv_seg.points1))
 
         for race_name in self.race_manager.races:
             if race_name == referential_race_name:
                 continue
 
             race = self.race_manager.races[race_name]
-            
+
             matches = self.find_matching_race_segment(race, deniv_seg)
 
             if len(matches) > 0:
-                #print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
+                # print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
 
                 if len(matches) > 1:
-                    #print("Segment matches --> more than 1 fragment")
+                    # print("Segment matches --> more than 1 fragment")
                     continue
 
-                #TODO apply more restrictive selection/filtering ?
+                # TODO apply more restrictive selection/filtering ?
                 if len(matches[0].points1) > 0.9 * len(deniv_seg.points1):
-                    #only if the given match is more than 90% of the length of the reference seg
+                    # only if the given match is more than 90% of the length of the reference seg
                     matching_race_segment.append((race_name, matches[0]))
-                
+
         self.deniv_segment[referential_race_name] = matching_race_segment
 
-    
     def find_race_length(self, referential_race_name):
 
         matching_race_segment = []
 
         length_seg = self.race_manager.best_length_segment[referential_race_name]
-        #print(">> Seg deniv length:", len(deniv_seg.points1))
+        # print(">> Seg deniv length:", len(deniv_seg.points1))
 
         for race_name in self.race_manager.races:
             if race_name == referential_race_name:
                 continue
 
             race = self.race_manager.races[race_name]
-            
+
             matches = self.find_matching_race_segment(race, length_seg)
 
             if len(matches) > 0:
-                #print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
-                
+                # print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
+
                 if len(matches) > 1:
-                    #print("Segment matches --> more than 1 fragment")
+                    # print("Segment matches --> more than 1 fragment")
                     continue
 
-                #TODO apply more restrictive selection/filtering ?
+                # TODO apply more restrictive selection/filtering ?
                 if len(matches[0].points1) > 0.9 * len(length_seg.points1):
-                    #only if the given match is more than 90% of the length of the reference seg
+                    # only if the given match is more than 90% of the length of the reference seg
                     matching_race_segment.append((race_name, matches[0]))
-                
+
         self.length_segment[referential_race_name] = matching_race_segment
 
-    
     def find_race_density(self, referential_race_name):
 
         matching_race_segment = []
 
         density_seg = self.race_manager.best_density_segment[referential_race_name]
-        #print(">> Seg deniv length:", len(deniv_seg.points1))
+        # print(">> Seg deniv length:", len(deniv_seg.points1))
 
         for race_name in self.race_manager.races:
             if race_name == referential_race_name:
                 continue
 
             race = self.race_manager.races[race_name]
-            
+
             matches = self.find_matching_race_segment(race, density_seg)
 
             if len(matches) > 0:
-                #print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
+                # print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
 
                 if len(matches) > 1:
-                    #print("Segment matches --> more than 1 fragment")
+                    # print("Segment matches --> more than 1 fragment")
                     continue
 
-                #TODO apply more restrictive selection/filtering ?
+                # TODO apply more restrictive selection/filtering ?
                 if len(matches[0].points1) > 0.9 * len(density_seg.points1):
-                    #only if the given match is more than 90% of the length of the reference seg
+                    # only if the given match is more than 90% of the length of the reference seg
                     matching_race_segment.append((race_name, matches[0]))
-                
-        self.density_segment[referential_race_name] = matching_race_segment
 
+        self.density_segment[referential_race_name] = matching_race_segment
 
     def draw_denivelation_segment(self, referential_race_name):
         deniv_segments = self.deniv_segment[referential_race_name]
@@ -164,7 +158,6 @@ class RaceInferer:
 
             filename = os.path.join(st.files["output_folder"], f"best_length_matches_for_{referential_race_name}.html")
             gmap3.draw(filename)
-    
 
     def draw_race_and_matches(self, race, matches):
         if GOOGLE_MAP_API_KEY is None:
@@ -179,7 +172,6 @@ class RaceInferer:
 
         return gmap3
 
-
     def find_matching_race_segment(self, race, best_segment):
 
         # Make a big segment out of a race (heavy but less code...)
@@ -187,8 +179,8 @@ class RaceInferer:
         race_comparator.extract_segment()
         segments = race_comparator.segments
 
-        #Ckeck if segments is plauible:
-        #print(">> Seg nb:",len(segments), "  length:", len(segments[0].points1))
+        # Ckeck if segments is plauible:
+        # print(">> Seg nb:",len(segments), "  length:", len(segments[0].points1))
 
         race_as_segment = segments[0]
 
@@ -203,40 +195,36 @@ class RaceInferer:
 
         # from the given ref race
         deniv_segment_ref_race = self.race_manager.best_denivelation_segment[referential_race_name]
-        from_race.append((referential_race_name, deniv_segment_ref_race.get_statistics(from_race = 1)))
+        from_race.append((referential_race_name, deniv_segment_ref_race.get_statistics(from_race=1)))
 
         # from the segment matching races
         for (name, seg) in self.deniv_segment[referential_race_name]:
-            from_race.append((name, seg.get_statistics(from_race = 1)))
+            from_race.append((name, seg.get_statistics(from_race=1)))
 
         return from_race
-
 
     def get_statistics_from_density_seg(self, referential_race_name):
         from_race = []
 
         # from the given ref race
         density_segment_ref_race = self.race_manager.best_density_segment[referential_race_name]
-        from_race.append((referential_race_name, density_segment_ref_race.get_statistics(from_race = 1)))
+        from_race.append((referential_race_name, density_segment_ref_race.get_statistics(from_race=1)))
 
         # from the segment matching races
         for (name, seg) in self.density_segment[referential_race_name]:
-            from_race.append((name, seg.get_statistics(from_race = 1)))
-
+            from_race.append((name, seg.get_statistics(from_race=1)))
 
         return from_race
-
 
     def get_statistics_from_length_seg(self, referential_race_name):
         from_race = []
 
         # from the given ref race
         length_segment_ref_race = self.race_manager.best_length_segment[referential_race_name]
-        from_race.append((referential_race_name, length_segment_ref_race.get_statistics(from_race = 1)))
+        from_race.append((referential_race_name, length_segment_ref_race.get_statistics(from_race=1)))
 
         # from the segment matching races
         for (name, seg) in self.length_segment[referential_race_name]:
-            from_race.append((name, seg.get_statistics(from_race = 1)))
+            from_race.append((name, seg.get_statistics(from_race=1)))
 
         return from_race
-        
