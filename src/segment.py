@@ -3,13 +3,14 @@ import numpy as np
 
 class Segment:
 
-    def __init__(self, positions, times1, times2, points1, points2):
+    def __init__(self, positions, times1, times2, points1, points2, segment_type):
         self.positions = positions
         self.times1 = times1
         self.times2 = times2
         self.points1 = points1
         self.points2 = points2
         self.keep_segment_points()
+        self.segment_type = segment_type
 
     def __str__(self):
         string = ""

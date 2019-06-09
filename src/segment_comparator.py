@@ -20,7 +20,7 @@ class SegmentComparator:
 
         return string
 
-    def extract_segment(self):
+    def extract_segment(self, segment_type):
         size = 10
         step = 5
         epsilon = 0.00089443
@@ -82,4 +82,4 @@ class SegmentComparator:
             timestamps1 = seg[1][0]
             timestamps2 = seg[1][1]
             self.segments.append(
-                Segment(positions, timestamps1, timestamps2, self.segment1.points1, self.segment2.points1))
+                Segment(positions, timestamps1, timestamps2, self.segment1.points1, self.segment2.points1, segment_type))

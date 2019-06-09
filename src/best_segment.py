@@ -83,7 +83,7 @@ class BestSegment:
                         continue
 
                     segmentComparator = SegmentComparator(seg_1, seg_2)
-                    segmentComparator.extract_segment()
+                    segmentComparator.extract_segment("density")
                     segments = segmentComparator.segments  # Warning the timestamp given by SegmentComparator aren't very relevant!
 
                     # todo si seg1 & seg2 sont "semblables" --> 1 on garde le plus long, 2 on garde le plus court, 3  on garde que le match et delete les 2 primitive .......

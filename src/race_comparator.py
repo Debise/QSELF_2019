@@ -88,7 +88,7 @@ class RaceComparator:
             positions = seg[0]
             timestamps1 = seg[1][0]
             timestamps2 = seg[1][1]
-            self.segments.append(Segment(positions, timestamps1, timestamps2, self.race1.points, self.race2.points))
+            self.segments.append(Segment(positions, timestamps1, timestamps2, self.race1.points, self.race2.points, "primitive"))
 
     def draw(self):
         if GOOGLE_MAP_API_KEY is None:

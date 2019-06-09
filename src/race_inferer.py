@@ -1,6 +1,7 @@
 from src.segment_comparator import SegmentComparator
 from src.race_comparator import RaceComparator
 from src.race_manager import RaceManager
+from src.segment import Segment
 import settings as st
 import pickle
 from gmplot import GoogleMapPlotter
@@ -16,7 +17,8 @@ class RaceInferer:
 
     def __init__(self):
 
-        self.race_manager = RaceManager().load()
+
+        self.race_manager = RaceManager.load()
 
         self.deniv_segment = {}  # each entry (for a given refRace) contains a tuple (matchingRaceName, MatchingSegment)
         self.length_segment = {}
@@ -45,8 +47,8 @@ class RaceInferer:
                 continue
 
             race = self.race_manager.races[race_name]
-
-            matches = self.find_matching_race_segment(race, deniv_seg)
+            
+            matches = self.find_matching_race_segment(race, deniv_seg, "denivelation")
 
             if len(matches) > 0:
                 # print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
@@ -74,8 +76,8 @@ class RaceInferer:
                 continue
 
             race = self.race_manager.races[race_name]
-
-            matches = self.find_matching_race_segment(race, length_seg)
+            
+            matches = self.find_matching_race_segment(race, length_seg, "length")
 
             if len(matches) > 0:
                 # print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
@@ -103,8 +105,8 @@ class RaceInferer:
                 continue
 
             race = self.race_manager.races[race_name]
-
-            matches = self.find_matching_race_segment(race, density_seg)
+            
+            matches = self.find_matching_race_segment(race, density_seg, "density")
 
             if len(matches) > 0:
                 # print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
@@ -172,7 +174,8 @@ class RaceInferer:
 
         return gmap3
 
-    def find_matching_race_segment(self, race, best_segment):
+
+    def find_matching_race_segment(self, race, best_segment, segment_type):
 
         # Make a big segment out of a race (heavy but less code...)
         race_comparator = RaceComparator(race, race)
@@ -185,7 +188,7 @@ class RaceInferer:
         race_as_segment = segments[0]
 
         segment_comparator = SegmentComparator(best_segment, race_as_segment)
-        segment_comparator.extract_segment()
+        segment_comparator.extract_segment(segment_type)
         matches = segment_comparator.segments
 
         return matches
