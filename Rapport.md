@@ -12,7 +12,7 @@ Pedro Costa & Louis Delabays
 
 Dans le cadre du cours *Quantified Self*, il nous a été demandé de réaliser un projet en relation avec les thèmes vus durant le semestre. 
 
-Notre projet a pour but de fournir un moyen de comparer des courses à pieds de manière un peu similaire à l'application **Strava**. Avec Strava, les segments ont été définis par un utilisateur qui a choisi un point de départ et un points d'arrivé d'une portion de sa course qu'il trouvait intéressant. Ensuite, pour chaque nouvelle course l'application détecte les portions qui correpsondent à un segment. Finalement, nous avons la possibiltié de comparer nos différents efforts sur ce segment ou de se comparer avec d'autres athlètes.
+Notre projet a pour but de fournir un moyen de comparer des courses à pieds de manière un peu similaire à l'application **Strava**. Avec Strava, les segments ont été définis par un utilisateur qui a choisi un point de départ et un points d'arrivé d'une portion de sa course qu'il trouvait intéressant. Ensuite, pour chaque nouvelle course l'application détecte les portions qui correpsondent à un segment. Finalement, nous avons la possibilité de comparer nos différents efforts sur ce segment ou de se comparer avec d'autres athlètes.
 
 Ce que nous voulons réaliser est un peu différent: Notre application (script Python) trouvera d'elle même les segments intéressants sans l'intervention de l'utilisateur. Plusieurs courses à pieds seront fournies à l'application pour qu'elle trouve les portions communes des différentes courses à pieds. L'utilisateur pourra ensuite visualiser les courses et comparer les segments communs. Le descriptions complètes et détaillées du projet se trouve au chapitre suivant (*2. Description et but*).
 
@@ -50,55 +50,71 @@ Ce point précise quelques détails de l'implémentation générale sur le proje
 
 ### 2.3 Architecture logicielle
 
-
+...
 
 
 ## 3. Récupération des courses depuis la montre
 
-** Garmin en mode *USB Mass Storage*
-** .fit 
-** class Point
-** en dataframe
-** class race
-
 Les fichiers de données `.fit` sont stockés dan sla mémoire interne de la montre GPS. Pour les récupérer, il faut que la montre soit configurer en *USB Mass Storage*, ainsi il suffit de la brancher à un ordinateur pour copier les fichiers `.fit` des activités effectuées. 
-
-#### ----Capture d'écran ?----
 
 Avec le package Python **fitparse** et sa classe **FitFile**, nous avons pu récupérer facilement les données contenues dans les fichiers `.fit`.
 Ce fichier contient un certain nombre de points enregistrés chaque seconde (dépend du mode d'enregistrement configuré dans la montre). Chaque point renferme les valeurs suivantes:
 
-* Timestamp
-* todo...
+* `timestamp` :  Date et heure de la mesure
+* `position_lat` : Latitude 
+* `position_long` : Longitude
+* `distance` : Distance parcourue depuis le début de l'activité
+* `enhanced_altitude` : Altitude corrigée (à vérifier)
+* `altitude` : Altitude
+* `enhanced_speed` : Vitesse corrigée [m/s] (à vérifier)
+* `speed` : Vitesse [m/s]
+* `heart_rate` : Fréquence cardique
+* `cadence` : Cadence de course [step/minute]
+* `temperature` : température
+* `fractional_cadence` : (?) Valeur soit 0, soit 0.5
 
-...
 
 Pour nos besoins, nous avons changé l'organisation des données des activité afin de simplifier leurs utlisations. Nous avons 2 manières de stocker les activités pour les exploiter ensuite:
 
-* En liste de Point (nous avons créer la classe Point)
-#### ----Capture d'écran ?----
-
+* En liste d'objet `Point` (nous avons créer la classe Point)
 * en Dataframe Pandas
-#### ----Capture d'écran ?----
 
-
-Et finalement, une classe Race ...
-
+Et finalement, une classe `Race` contient les 2 représentations de l'activité. Toutes les activités sont stockées dans une classe `RaceManager` dont les autres fonctionnalités sont détaillées par la suite. 
 
 ## 4. Extraction des segments
 
-**Distance en 2 portion de 2 course --> "fenêtre glissante"
-**Séparation des "morceaux" continuu pour obtenir une liste de segments
-**Filtrage des segments trouvés
-**Toutes les courses vs toutes les courses
+### 4.1 Comparaison des courses (deux à deux)
 
-** class RaceManager
-** class segment
+Pour trouver les portions communes entre deux courses, nous avons implémenté plusieurs classes qui permettent d'effectuer ces opérations. Dans un premier temps, nous avons cherché des librairies pour trouver les plus longues portions communes. Par exemple, l'algorithme LCSS (Longest Common Subsequence) qui est utilisé pour trouver des mots/pharses à partir de lettre ou de phonèmes. Malheureusement, les seuls implémentations trouvées pour des trajectoires en deux dimensons ne permettaient pas de faire le traitment que nous avions besoin. En effet, les coordonnées GPS des différentes courses à pieds sont toutes diffférentes. Par conséquent, il faut que nous puissions définir une *tolérance* pour laquelle nous considérons que les coordonnées sont tout de même *identiques*.
+
+Afin d'extraire les portions communes entre deux courses, nous avons travaillé avec des fenêtres de dix points à la fois: On prend les dix premiers points de la courses de références que l'on compare avec ceux de la deuxième course. Ensuite, on fait avancer le fenêtre de dix points de la deuxième course et l'on compare à nouveau avec la course de référence. Les figures ci-dessous illustrent ce processus:
+
+## IMAGE 
+
+Une fois que la première fenêtre est passée devant toute la deuxième course, on l'avance de cinq points (cette valeur a été trouvée par essais; avancer de plusieurs points permet de diminuer le temps de calculs). Pour la simplicité de l'explication, la fenêtre n'est avancer que d'un point dans ces figures:
+
+## IMAGE
+
+Pour définir qu'une fenêtre *matche* avec l'autre course, les dix distances points-à-points sont sommées et si elle est inférieur à un seuil, alors on stocke le fenêtre de dix points. Pour extraire les segments, on sépare les parties continues et discontinues: 
+
+## IMAGE
+
+On obtient une liste de portions communes aux deux courses et pour améliorer les étapes suivantes, les trajectoires communes sont moyennées:
+
+## IMAGE / screen
+
+Finalement, les portions communes sont transformées en objet `Segment` qui contient les points des courses sources et la trajectoire moyennées. Cette objet permet également de retrouver les deux courses qui ont permis de trouver ce segment.
+
+
+### 4.2 Au niveau de l'application
+
+La procédure décrite au *point 4.1* est effectuée dans l'application pour chaque course contre toutes les autres courses. Ainsi, dans l'objet `RaceManager`, il y a un dictionnaire avec une clé par course qui contient une liste de tous les segments trouvées pour cette clé. Cette liste de segments en contient souvent plusieurs dizaines et ils sont pour la plupart très similaire. L'étape de traitement suivante extrait parmis les segments de la liste les plus pertinents selon plusieurs critères.
 
 ## 5. Recherche des segments pertinents
 
-**3 types de segments : plus long, plus de déniv., plus de densité 
-** class BestSegment
+Etant donné le nombre trop important de segments trouvés pour chaque course à l'étape 4, nous avons décidé de nous focaliser sur trois types de segments, à savoir le segment le plus long, celui avec le plus de dévivelation positive et celui avec la densité moyenne la plus élevée.
+
+Pour extraire les segments les plus pertinents pour chaque type, nous avons implémenté la classe `BestSegment`.
 
 ### 5.1 Segment avec le plus de dénivelation
 
@@ -112,7 +128,7 @@ Et finalement, une classe Race ...
 **"inférence"
 **on reprend les segments du pt précédents et on cherche quelle course "match"
 **on obtient une liste de course et de segments --> visualisation/comparaison
-** class RaceInferer
+** class `RaceInferer`
 
 ## 7. Visualisation des courses & segments
 
