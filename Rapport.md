@@ -112,15 +112,30 @@ La procédure décrite au *point 4.1* est effectuée dans l'application pour cha
 
 ## 5. Recherche des segments pertinents
 
-Etant donné le nombre trop important de segments trouvés pour chaque course à l'étape 4, nous avons décidé de nous focaliser sur trois types de segments, à savoir le segment le plus long, celui avec le plus de dévivelation positive et celui avec la densité moyenne la plus élevée.
+Etant donné le nombre trop important de segments trouvés pour chaque course (chapitre précédent), nous avons décidé de nous focaliser sur trois types de segments, à savoir le segment le plus long, celui avec le plus de dévivelation positive et celui avec la densité moyenne la plus élevée.
 
 Pour extraire les segments les plus pertinents pour chaque type, nous avons implémenté la classe `BestSegment`.
 
 ### 5.1 Segment avec le plus de dénivelation
 
+
+
 ### 5.2 Segment le plus long
 
+
+
 ### 5.3 Segment avec le plus de densité moyenne
+
+Ce dernier type de segment est celui qui nécessite le plus d'opérations et de temps à l'extration. Mais c'est aussi un segment très intéressant car, normalement, un nombre plus important de courses vont matcher avec lui. Donc, cela permet de le comparer avec un plus grand nombre d'efforts différents du même utiliateurs.
+
+La première étape consiste à créer une *density map* pour chaque course à partir de tous les segments trouvés au chapitre 4. Pour cela,  
+
+## IMAGE density map
+
+
+## IMAGE avec density > à ...
+
+
 
 
 ## 6. Recherche des courses avec segments communs
@@ -134,8 +149,13 @@ Pour extraire les segments les plus pertinents pour chaque type, nous avons impl
 
 **Server
 **Navigation
+**Visualisation
 
 ## 8. Conclusion
+
+**Intéressant de travailler sur ces sets de données
+**Toute la chaine de l'extraction jusqu'à la visualisation est fonctionnelle
+**
 
 ## 9. Perspectives d'améliorations
 
@@ -143,6 +163,10 @@ Pour extraire les segments les plus pertinents pour chaque type, nous avons impl
 **prendre les 5 meilleures segments de chaque type (ex. les 5 meilleures segments de dénivelation) pour chaque course
 
 ** fait d'ajouter une nouvelle course au set de courses 
+
+**mutlithreading pour accélerer les traitements des courses
+
+** Etendre le set de course pour voir si ça fonctionne vraiment bien
 
 ## 10. Bibliographie
 
