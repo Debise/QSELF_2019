@@ -178,6 +178,12 @@ Cette étape d'*inférence* prend un temps relativement important. C'est pourquo
 **Toute la chaine de l'extraction jusqu'à la visualisation est fonctionnelle
 **Temps de traitement assez long
 
+A ce stade, ce projet permet de comparer les différentes courses à pieds effectuées par un utilisateur. Et plus particulièrement de comparer les parties de courses communes à plusieurs activités. L'application trouve et sélectionne les segments les plus pertinents pour une course choisie et, au moyen d'un naviguateur Web, de visualiser les segments. 
+
+L'application se sépare en deux parties distinctes: La partie de recherche de segments et l'outil graphique pour visualiser et comprarer les courses et segments. Cela permet d'améliorer et d'ajouter des fonctionnalités à l'une ou l'autre des parties sans être forcé de faire de même sur l'autre. Dès lors, il serait relativement simple d'augmenter le nombre de type de segments automatiqement extrait des courses pour offrir de plus amples possibilités de comparaisons.
+
+
+
 ## 9. Perspectives d'améliorations
 
 **ajouter des type de segment intéressant 
