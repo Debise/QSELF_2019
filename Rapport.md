@@ -114,36 +114,57 @@ La procédure décrite au *point 4.1* est effectuée dans l'application pour cha
 
 Etant donné le nombre trop important de segments trouvés pour chaque course (chapitre précédent), nous avons décidé de nous focaliser sur trois types de segments, à savoir le segment le plus long, celui avec le plus de dévivelation positive et celui avec la densité moyenne la plus élevée.
 
-Pour extraire les segments les plus pertinents pour chaque type, nous avons implémenté la classe `BestSegment`.
+Pour extraire les segments les plus pertinents pour chaque type, nous avons implémenté la classe `BestSegment`. Ensuite, les meilleures segments de chaque type sont stockés dans le `RaceManager`.
 
-### 5.1 Segment avec le plus de dénivelation
+### 5.1 Segment avec le plus de dénivellation
 
+Pour extraire ce type de segment parmis la liste de segments d'une course, il faut effectuer un peu de traitement sur les données d'altitude. Tout d'abord, on applique la dérivé (discrète) sur les altitudes de la course (`np.diff(...)`). Etant donné que l'on cherche la dénivellation positive (la montée, pas la descente), on met toutes les valeurs négatives de la dérivée à zéro. Et finalement, on somme toutes les valeurs (`np.sum(...)`). Ainsi, on obtient le dénivelé positif du segment.
+
+On cherche le segment avec le dénivelé positif le plus important.
 
 
 ### 5.2 Segment le plus long
 
+Ce segment est le plus simple à trouver parmis les trois types de segment à extraire. On cherche le segment dont la différence entre la `distance` de fin et celle du début est la plus grande. En effet on ne peut pas se baser sur le nombre de points enregistrés par la montre, car celle-ci effectue une mesure environ chaque seconde et pas en fonction de la distance.
 
+## IMAGE illsutrer avec un schéma ??
 
 ### 5.3 Segment avec le plus de densité moyenne
 
-Ce dernier type de segment est celui qui nécessite le plus d'opérations et de temps à l'extration. Mais c'est aussi un segment très intéressant car, normalement, un nombre plus important de courses vont matcher avec lui. Donc, cela permet de le comparer avec un plus grand nombre d'efforts différents du même utiliateurs.
+Ce dernier type de segment est celui qui nécessite le plus d'opérations et de temps à l'extraction. Mais c'est aussi un segment très intéressant car, normalement, un nombre plus important de courses vont matcher avec lui. Donc, cela permet de le comparer avec un plus grand nombre d'efforts différents du même utiliateurs.
 
-La première étape consiste à créer une *density map* pour chaque course à partir de tous les segments trouvés au chapitre 4. Pour cela,  
+La première étape consiste à créer une *density map* pour chaque course à partir de tous les segments trouvés au chapitre 4. Pour cela, on subdivise toute la surface rectangulaire que prennent les segments en petites zones:
 
-## IMAGE density map
+## IMAGE segment + rectangle + tailles d'une zone
 
+En parcourant ces zones, on compte le nombre de segment différents compris dans chaque zone. On obtient une carte de densité des segments pour une course données. Voici le résultat pour une course :
 
-## IMAGE avec density > à ...
+## IMAGE density
 
+Pour chaque segment, on extrait diverses valeurs, comme par exemple:
 
+* la densité **minimum** 
+* la densité **maximale**
+* la densité **moyenne**
+
+Après plusieurs essais, il a été constaté que la densité moyenne d'un segment est la mesure la plus utile pour trouver le segment par lequel passe le plus grand nombre de courses différentes. 
+
+Illustration du segment avec la plus grand densité moyenne pour une course :
+
+## IMAGE density + segment violent + 1 highlight
 
 
 ## 6. Recherche des courses avec segments communs
 
-**"inférence"
-**on reprend les segments du pt précédents et on cherche quelle course "match"
-**on obtient une liste de course et de segments --> visualisation/comparaison
-** class `RaceInferer`
+Grâce à l'étape précédente (chapitre 5), nous disposons du meilleure segment de chaque type pour les différentes courses. Dans cette dernière étape de traitement, il s'agit d'effectuer l'*inférence* des courses selon leurs meilleures segments. Cela consiste à :
+
+1. Choisir une course à *inférer*
+2. A partir des segments pertinents, trouver les courses qui matches ces segments
+3. Stocker les matches pour pouvoir les comparer / visualiser par la suite
+
+**Remarque:** Les segments ont initialement été trouvés en cherchant les portions communes de deux courses. Mais lors de l'*inférence*, il est fréquent de trouver d'autres courses que celles d'origines qui matchent également un segment. Typiquement, le segment avec la meilleure densité moyenne permet de comparer un nombre plus importants d'efforts différents.
+
+Cette étape d'*inférence* prend un temps relativement important. C'est pourquoi, la classe `RaceInferer` permet de stocker les données après le traitement / inférence. Ainsi, notre outil de visualisation peut simplement reprendre les données préprocessées pour les affichées selon la volonté de l'utilisateur.
 
 ## 7. Visualisation des courses & segments
 
@@ -155,7 +176,7 @@ La première étape consiste à créer une *density map* pour chaque course à p
 
 **Intéressant de travailler sur ces sets de données
 **Toute la chaine de l'extraction jusqu'à la visualisation est fonctionnelle
-**
+**Temps de traitement assez long
 
 ## 9. Perspectives d'améliorations
 
