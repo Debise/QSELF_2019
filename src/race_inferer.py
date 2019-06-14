@@ -17,7 +17,6 @@ class RaceInferer:
 
     def __init__(self):
 
-
         self.race_manager = RaceManager.load()
 
         self.deniv_segment = {}  # each entry (for a given refRace) contains a tuple (matchingRaceName, MatchingSegment)
@@ -47,7 +46,7 @@ class RaceInferer:
                 continue
 
             race = self.race_manager.races[race_name]
-            
+
             matches = self.find_matching_race_segment(race, deniv_seg, "denivelation")
 
             if len(matches) > 0:
@@ -76,7 +75,7 @@ class RaceInferer:
                 continue
 
             race = self.race_manager.races[race_name]
-            
+
             matches = self.find_matching_race_segment(race, length_seg, "length")
 
             if len(matches) > 0:
@@ -105,7 +104,7 @@ class RaceInferer:
                 continue
 
             race = self.race_manager.races[race_name]
-            
+
             matches = self.find_matching_race_segment(race, density_seg, "density")
 
             if len(matches) > 0:
@@ -173,7 +172,6 @@ class RaceInferer:
             match.draw('yellow', gmap3=gmap3)
 
         return gmap3
-
 
     def find_matching_race_segment(self, race, best_segment, segment_type):
 

@@ -63,7 +63,7 @@ class Segment:
         hours = minutes / 60
         hours_str = f'{int(hours)} hour(s) and {(minutes - (int(hours) * 60)):.2f} minutes'
 
-        speed_array = np.array([i.speed for i in points])
+        speed_array = np.array([i.speed for i in points if i.speed > 0])
         average_speed = np.mean(speed_array)
         max_speed = np.max(speed_array)
         min_speed = np.min(speed_array)
@@ -90,7 +90,7 @@ class Segment:
             'Speed standard deviation': f'{std_speed:.2f}',
             'Heights difference': f'{heights_difference:.2f} m',
             'Positive denivelation': f'{positive_denivelation:.2f} m',
-            'Total distance': f'{distance} m ({km_distance:.2f} km)',
+            'Total distance': f'{distance:.2f} m ({km_distance:.2f} km)',
             'Average HR': f'{average_heart_rate:.2f} bpm'
         }
 

@@ -47,25 +47,18 @@ function plot_graph(container, f_append, name, unit, y_array, x_array, color, st
 
     if (start > 0) {
         let grey = window.chartColors.grey;
-        let data_left = [];
+        let data_race = [];
         let data_segment = [];
-        let data_right = [];
 
         for (let i = 0; i < data[0].length; i++) {
             let lbl = data[0][i];
 
-            if (lbl < start) {
-                data_left.push(data[1][i]);
-                data_right.push(NaN);
-                data_segment.push(NaN);
-            } else if (lbl > stop) {
-                data_right.push(data[1][i]);
-                data_left.push(NaN);
+            if (lbl < start || lbl > stop) {
+                data_race.push(data[1][i]);
                 data_segment.push(NaN);
             } else {
                 data_segment.push(data[1][i]);
-                data_left.push(NaN);
-                data_right.push(NaN);
+                data_race.push(NaN);
             }
         }
 
@@ -76,7 +69,7 @@ function plot_graph(container, f_append, name, unit, y_array, x_array, color, st
                 backgroundColor: grey,
                 borderColor: grey,
                 pointRadius: 0,
-                data: data_left
+                data: data_race
             },
             {
                 label: "Segment's " + name,
@@ -85,14 +78,6 @@ function plot_graph(container, f_append, name, unit, y_array, x_array, color, st
                 borderColor: color,
                 pointRadius: 0,
                 data: data_segment
-            },
-            {
-                label: "Race's " + name,
-                fill: true,
-                backgroundColor: grey,
-                borderColor: grey,
-                pointRadius: 0,
-                data: data_right
             }
         ];
 

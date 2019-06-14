@@ -84,16 +84,21 @@ class BestSegment:
 
                     segmentComparator = SegmentComparator(seg_1, seg_2)
                     segmentComparator.extract_segment("density")
-                    segments = segmentComparator.segments  # Warning the timestamp given by SegmentComparator aren't very relevant!
+                    # Warning the timestamp given by SegmentComparator aren't very relevant!
+                    segments = segmentComparator.segments
 
-                    # todo si seg1 & seg2 sont "semblables" --> 1 on garde le plus long, 2 on garde le plus court, 3  on garde que le match et delete les 2 primitive .......
+                    # todo si seg1 & seg2 sont "semblables" --> 1 on garde le plus long, 2 on garde le plus court, 3
+                    #  on garde que le match et delete les 2 primitive .......
                     # todo Solution 3 si l'on a un bout commun plus grand XX
 
-                    # todo BUT trouver les chemin qui sont soit très long (>200) // soit ceux qui ont été fait + que 5 fois et suffisamment long // soit ceux avec le plus de deni ?????
-                    # faire avec la densité (voisine) sur une bonne partie (80%) du chemin --> ___si > que 5 (course différente) sur 80% du segment _____par exemple (truc de la moyenne pour améliorer le segment)
+                    # todo BUT trouver les chemin qui sont soit très long (>200) // soit ceux qui ont été fait + que
+                    #  5 fois et suffisamment long // soit ceux avec le plus de deni ?????
+                    # faire avec la densité (voisine) sur une bonne partie (80%) du chemin --> ___si > que 5 (course
+                    # différente) sur 80% du segment _____par exemple (truc de la moyenne pour améliorer le segment)
                     # on peut pas tout faire --> indiquer les améliorations possibles
 
-                    # todo utiliser LCSS ou autre pour retirer les segement trop similaire OU OU faire avec un kind of "extract segment"
+                    # todo utiliser LCSS ou autre pour retirer les segement trop similaire OU OU faire avec un kind of
+                    #  "extract segment"
 
                     # print(len(segments))
                     # [print(len(i.points1)) for i in segments if len(i.points1) > 50]

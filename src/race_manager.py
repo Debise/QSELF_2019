@@ -72,7 +72,7 @@ class RaceManager:
             race_comparator.draw()
             self.race_comparators[race_comparator.name] = race_comparator
 
-        #print("Total number of segment found      :", len(all_segment))
+        # print("Total number of segment found      :", len(all_segment))
 
         self.all_seg_of_one_race[referential_race_name] = all_segment
 
