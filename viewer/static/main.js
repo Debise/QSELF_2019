@@ -377,6 +377,12 @@ function call_comparison_visualisation() {
         container.empty();
 
         let return_button = $('<button>').addClass("btn btn-primary my-1").text("Return");
+        let form = $('<form>').attr("action", "/race-detail").attr("method", "post");
+        let comparison_race_button = $('<button>').attr("type", "submit").addClass("btn btn-primary my-1").text(comparison_race_name);
+        let hidden_input = $('<input>').attr("type", "hidden").attr("value", comparison_race_name).attr("name", "races");
+
+        form.append(comparison_race_button);
+        form.append(hidden_input);
 
         return_button.on("click", function () {
             call_comparison_segments();
@@ -390,6 +396,7 @@ function call_comparison_visualisation() {
             .attr('data', data['filename']);
 
         container.append(return_button);
+        container.append(form);
         container.append(object);
     });
 }
