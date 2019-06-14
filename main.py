@@ -66,7 +66,8 @@ if __name__ == '__main__':
     #####
     
     
-    ref_race = "2018-12-20-16-42-55" 
+    #ref_race = "2018-12-20-16-42-55" 
+    ref_race = "2019-03-25-17-24-10"
 
     race_inferer_wrapper = RaceInfererWrapper()
 
