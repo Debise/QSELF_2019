@@ -13,10 +13,6 @@ load_dotenv()
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
-# js = Bundle('brat/client/lib/head.load.min.js', 'process.js', output='gen/main.js')
-# assets = Environment(app)
-# assets.register('main_js', js)
-
 RACE_MANAGER = RaceManager().load()
 RACE_INFERER = RaceInfererWrapper()
 
@@ -106,7 +102,7 @@ def get_comparison_table():
             segment = segment_tuple[1]
             break
 
-    json_dict = segment.get_statistics()
+    json_dict = {"seg1": segment.get_statistics(from_race=1), "seg2": segment.get_statistics(from_race=2)}
 
     return jsonify(json_dict)
 

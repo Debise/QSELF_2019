@@ -145,7 +145,7 @@ function plot_graph(container, f_append, name, unit, y_array, x_array, color, st
     window.myLine = new Chart(canvas, config);
 }
 
-function add_table_stats(data, container, table_class) {
+function add_table_stats(data, container, comparison=false) {
 
     container.find(".table-stats").empty();
 
@@ -153,6 +153,13 @@ function add_table_stats(data, container, table_class) {
     let thead = $('<thead>').addClass('thead-dark');
     let tr = $('<tr>').append($('<th>').attr('scope', 'col').text("Stats"))
         .append($('<th>').attr('scope', 'col').text("Values"));
+
+    if (comparison){
+        tr.append($('<th>').attr('scope', 'col').text("Values compared race"));
+        var second_race_data = data["seg2"];
+        data = data["seg1"];
+    }
+
     let tbody = $('<tbody>');
 
     thead.append(tr);
@@ -166,13 +173,18 @@ function add_table_stats(data, container, table_class) {
 
         row.append(title).append(content);
 
+        if (comparison){
+            let content2 = $('<td>').text(second_race_data[i]);
+            row.append(content2);
+        }
+
         tbody.append(row);
     });
 
     table.append(tbody);
 
     let row_table = container.find('.table-stats');
-    let col = $('<div>').addClass(table_class);
+    let col = $('<div>').addClass("col-12");
 
     col.append(table);
     row_table.append(col);
@@ -187,7 +199,7 @@ function add_graphs_stats(container, f_append, distances, speeds, bpms, heights,
     plot_graph(container, f_append, "Height", "(m)", heights, distances, window.chartColors.green, start, stop);
 }
 
-function call_stats(container, f_append, table_class) {
+function call_stats(container, f_append) {
 
     var url = "/race-detail/statistics";
     var FD = new FormData();
@@ -208,7 +220,7 @@ function call_stats(container, f_append, table_class) {
         let bpms = pop('bpms', data);
         let heights = pop('heights', data);
 
-        add_table_stats(data, container, table_class);
+        add_table_stats(data, container);
 
         add_graphs_stats(container, f_append, distances, speeds, bpms, heights);
     });
@@ -225,7 +237,7 @@ function add_segments_list(data) {
     let button = $('<button>').addClass("btn btn-primary my-1").text("Compare");
     let select = $('<select>').addClass("custom-select my-1 mr-sm-2").attr("id", "select-segments");
 
-    button.on("click", function () {
+    button.one("click", function () {
         call_comparison_visualisation();
         call_comparison_table();
         call_comparison_graphs();
@@ -332,7 +344,7 @@ function call_comparison_table() {
         contentType: false
     }).done(function (data) {
         let container = $("#container-comparison");
-        add_table_stats(data, container, "col-11");
+        add_table_stats(data, container, true);
     });
 }
 
@@ -369,7 +381,7 @@ function call_comparison_visualisation() {
         form.append(comparison_race_button);
         form.append(hidden_input);
 
-        return_button.on("click", function () {
+        return_button.one("click", function () {
             call_comparison_segments();
             call_comparison_stats();
         });
@@ -380,8 +392,17 @@ function call_comparison_visualisation() {
             .attr("height", "650")
             .attr('data', data['filename']);
 
-        container.append(return_button);
-        container.append(form);
+        let row = $('<div>').addClass("row");
+        let col_return = $('<div>').addClass("col-2");
+        let col_form = $('<div>').addClass("col-3");
+
+        col_return.append(return_button);
+        col_form.append(form);
+
+        row.append(col_return);
+        row.append(col_form);
+
+        container.append(row);
         container.append(object);
     });
 }
@@ -399,7 +420,7 @@ function call_comparison_stats() {
         container.find(".graphs-stats").append(row);
     }
 
-    call_stats(container, f_append, "col-11");
+    call_stats(container, f_append);
 }
 
 function show_stats() {
@@ -412,7 +433,7 @@ function show_stats() {
         row.append(col);
     }
 
-    call_stats(container, f_append, "col-12")
+    call_stats(container, f_append);
 }
 
 function show_comparison() {

@@ -1,7 +1,6 @@
 from src.race_inferer import RaceInferer
 import os
 from gmplot import GoogleMapPlotter
-import settings as st
 
 GOOGLE_MAP_API_KEY = os.getenv("GOOGLE_MAP_API_KEY")
 
