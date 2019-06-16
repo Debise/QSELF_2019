@@ -3,6 +3,8 @@ from src.race_inferer import RaceInferer
 from src.race_inferer_wrapper import RaceInfererWrapper
 from src.race import Race
 from multiprocessing import cpu_count, Pool
+import gmplot
+import numpy as np
 
 
 if __name__ == '__main__':
@@ -77,21 +79,72 @@ if __name__ == '__main__':
     # Check the "inference"
     deniv, length, density = race_inferer_wrapper.get_best_segment(ref_race)
 
-    print("Found", len(deniv), "races matching the best deniv segment of ref race :", ref_race)
-    print("These matching reaces are :", [race_name for (race_name, seg) in deniv])
-    print("Segment.type for best devi. seg. :", [seg.segment_type for (race_name, seg) in deniv])
-    print("")
+    # print("Found", len(deniv), "races matching the best deniv segment of ref race :", ref_race)
+    # print("These matching reaces are :", [race_name for (race_name, seg) in deniv])
+    # print("Segment.type for best devi. seg. :", [seg.segment_type for (race_name, seg) in deniv])
+    # print("")
 
-    print("Found", len(density), "races matching the best density segment of ref race :", ref_race)
-    print("These matching reaces are :", [race_name for (race_name, seg) in density])
-    print("Segment.type for best devi. seg. :", [seg.segment_type for (race_name, seg) in density])
-    print("")
+    # print("Found", len(density), "races matching the best density segment of ref race :", ref_race)
+    # print("These matching reaces are :", [race_name for (race_name, seg) in density])
+    # print("Segment.type for best devi. seg. :", [seg.segment_type for (race_name, seg) in density])
+    # print("")
 
-    print("Found", len(length), "races matching the best length segment of ref race :", ref_race)
-    print("These matching reaces are :", [race_name for (race_name, seg) in length])
-    print("Segment.type for best devi. seg. :", [seg.segment_type for (race_name, seg) in length])
-    print("")
-    
+    # print("Found", len(length), "races matching the best length segment of ref race :", ref_race)
+    # print("These matching reaces are :", [race_name for (race_name, seg) in length])
+    # print("Segment.type for best devi. seg. :", [seg.segment_type for (race_name, seg) in length])
+    # print("")
+
+#TODO print density map
+
+    # race = race_inferer_wrapper.race_inferer.race_manager.races[ref_race]
+    # density_table = race_inferer_wrapper.race_inferer.race_manager.race_segment_density[ref_race]
+    # print(density_table.shape)
+
+    # #density map
+    # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.6)
+
+    # c = race.df[["timestamp", "position_lat", "position_long", "altitude", "distance"]].values.T
+    # gmap3.plot(c[1, :], c[2, :], 'cornflowerblue', edge_width=2.5)
+
+    # for i in range(density_table.shape[1]):
+    #     if density_table[2, i] > 0:
+    #         gmap3.scatter([density_table[0, i]], [density_table[1, i]], "yellow", size=np.sqrt(density_table[2, i]) * 8, marker=False)
+
+    # gmap3.draw("rapport_density.html")
+
+    # #density with segment density
+    # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.6)
+
+    # c = race.df[["timestamp", "position_lat", "position_long", "altitude", "distance"]].values.T
+    # gmap3.plot(c[1, :], c[2, :], 'cornflowerblue', edge_width=2.5)
+
+    # for i in range(density_table.shape[1]):
+    #     if density_table[2, i] > 0:
+    #         gmap3.scatter([density_table[0, i]], [density_table[1, i]], "yellow", size=np.sqrt(density_table[2, i]) * 8, marker=False)
+
+    # gmap3.plot(density[0][1].positions[0, :], density[0][1].positions[1, :], 'red', edge_width=5)
+
+    # gmap3.draw("rapport_density_with_seg.html")
+
+    # #segment length
+    # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.6)
+
+    # c = race.df[["timestamp", "position_lat", "position_long", "altitude", "distance"]].values.T
+    # gmap3.plot(c[1, :], c[2, :], 'cornflowerblue', edge_width=2.5)
+
+    # gmap3.plot(length[0][1].positions[0, :], length[0][1].positions[1, :], 'red', edge_width=5)
+
+    # gmap3.draw("seg_length.html")
+
+    # #segment deniv
+    # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.6)
+
+    # c = race.df[["timestamp", "position_lat", "position_long", "altitude", "distance"]].values.T
+    # gmap3.plot(c[1, :], c[2, :], 'cornflowerblue', edge_width=2.5)
+
+    # gmap3.plot(deniv[0][1].positions[0, :], deniv[0][1].positions[1, :], 'red', edge_width=5)
+
+    # gmap3.draw("seg_denivh.html")
 
 
 

@@ -89,19 +89,23 @@ Pour trouver les portions communes entre deux courses, nous avons implémenté p
 
 Afin d'extraire les portions communes entre deux courses, nous avons travaillé avec des fenêtres de dix points à la fois: On prend les dix premiers points de la courses de références que l'on compare avec ceux de la deuxième course. Ensuite, on fait avancer le fenêtre de dix points de la deuxième course et l'on compare à nouveau avec la course de référence. Les figures ci-dessous illustrent ce processus:
 
-## IMAGE 
+![](ressource_rapport/segment_1.png)
 
 Une fois que la première fenêtre est passée devant toute la deuxième course, on l'avance de cinq points (cette valeur a été trouvée par essais; avancer de plusieurs points permet de diminuer le temps de calculs). Pour la simplicité de l'explication, la fenêtre n'est avancer que d'un point dans ces figures:
 
-## IMAGE
+![](ressource_rapport/segment_2.png)
 
 Pour définir qu'une fenêtre *matche* avec l'autre course, les dix distances points-à-points sont sommées et si elle est inférieur à un seuil, alors on stocke le fenêtre de dix points. Pour extraire les segments, on sépare les parties continues et discontinues: 
 
-## IMAGE
+![](ressource_rapport/multi_seg.png)
 
-On obtient une liste de portions communes aux deux courses et pour améliorer les étapes suivantes, les trajectoires communes sont moyennées:
+*Les deux courses sont en vert et en bleu. La trajectoire commune est en rouge*
 
-## IMAGE / screen
+Pour ce faire, on parcourt les points de la trajectoire commune et on contrôle s'ils proviennent d'indices successifs de la première course. Lorsqu'ils ne sont pas successifs, on *split* en deux parties et ainsi de suite. On obtient une liste de portions communes aux deux courses. Pour améliorer les étapes suivantes, les trajectoires communes sont moyennées:
+
+![](ressource_rapport/traj_mean.png)
+
+*Les deux courses sont en vert et en bleu. La trajectoire commune moyennée est en rouge*
 
 Finalement, les portions communes sont transformées en objet `Segment` qui contient les points des courses sources et la trajectoire moyennées. Cette objet permet également de retrouver les deux courses qui ont permis de trouver ce segment.
 
@@ -139,7 +143,9 @@ La première étape consiste à créer une *density map* pour chaque course à p
 
 En parcourant ces zones, on compte le nombre de segment différents compris dans chaque zone. On obtient une carte de densité des segments pour une course données. Voici le résultat pour une course :
 
-## IMAGE density
+![](ressource_rapport/density_map.png)
+
+*La trajectoire de la course est en bleu et la densité de chaques zones est représentée par le diamètre des cercles jaunes*
 
 Pour chaque segment, on extrait diverses valeurs, comme par exemple:
 
@@ -151,7 +157,9 @@ Après plusieurs essais, il a été constaté que la densité moyenne d'un segme
 
 Illustration du segment avec la plus grand densité moyenne pour une course :
 
-## IMAGE density + segment violent + 1 highlight
+![](ressource_rapport/density_segment.png)
+
+*Le segment avec la plus grande densité moyenne est en rouge*
 
 
 ## 6. Recherche des courses avec segments communs
