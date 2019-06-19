@@ -9,13 +9,15 @@ import numpy as np
 
 if __name__ == '__main__':
 
+
+    ### Process & Inference flags ###
     process_all_race = 0
     infer_all = 0
 
-    nb_thread = cpu_count()
-    print(nb_thread, "CPUs available on this machine...")
+    # nb_thread = cpu_count()
+    # print(nb_thread, "CPUs available on this machine...")
 
-    #####
+    ###
 
     race_manager = RaceManager()
     number_of_races = 0
@@ -93,58 +95,6 @@ if __name__ == '__main__':
     # print("These matching reaces are :", [race_name for (race_name, seg) in length])
     # print("Segment.type for best devi. seg. :", [seg.segment_type for (race_name, seg) in length])
     # print("")
-
-#TODO print density map
-
-    # race = race_inferer_wrapper.race_inferer.race_manager.races[ref_race]
-    # density_table = race_inferer_wrapper.race_inferer.race_manager.race_segment_density[ref_race]
-    # print(density_table.shape)
-
-    # #density map
-    # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.6)
-
-    # c = race.df[["timestamp", "position_lat", "position_long", "altitude", "distance"]].values.T
-    # gmap3.plot(c[1, :], c[2, :], 'cornflowerblue', edge_width=2.5)
-
-    # for i in range(density_table.shape[1]):
-    #     if density_table[2, i] > 0:
-    #         gmap3.scatter([density_table[0, i]], [density_table[1, i]], "yellow", size=np.sqrt(density_table[2, i]) * 8, marker=False)
-
-    # gmap3.draw("rapport_density.html")
-
-    # #density with segment density
-    # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.6)
-
-    # c = race.df[["timestamp", "position_lat", "position_long", "altitude", "distance"]].values.T
-    # gmap3.plot(c[1, :], c[2, :], 'cornflowerblue', edge_width=2.5)
-
-    # for i in range(density_table.shape[1]):
-    #     if density_table[2, i] > 0:
-    #         gmap3.scatter([density_table[0, i]], [density_table[1, i]], "yellow", size=np.sqrt(density_table[2, i]) * 8, marker=False)
-
-    # gmap3.plot(density[0][1].positions[0, :], density[0][1].positions[1, :], 'red', edge_width=5)
-
-    # gmap3.draw("rapport_density_with_seg.html")
-
-    # #segment length
-    # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.6)
-
-    # c = race.df[["timestamp", "position_lat", "position_long", "altitude", "distance"]].values.T
-    # gmap3.plot(c[1, :], c[2, :], 'cornflowerblue', edge_width=2.5)
-
-    # gmap3.plot(length[0][1].positions[0, :], length[0][1].positions[1, :], 'red', edge_width=5)
-
-    # gmap3.draw("seg_length.html")
-
-    # #segment deniv
-    # gmap3 = gmplot.GoogleMapPlotter(46.98, 6.89, 13.6)
-
-    # c = race.df[["timestamp", "position_lat", "position_long", "altitude", "distance"]].values.T
-    # gmap3.plot(c[1, :], c[2, :], 'cornflowerblue', edge_width=2.5)
-
-    # gmap3.plot(deniv[0][1].positions[0, :], deniv[0][1].positions[1, :], 'red', edge_width=5)
-
-    # gmap3.draw("seg_denivh.html")
 
 
 

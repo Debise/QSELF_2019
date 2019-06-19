@@ -55,7 +55,7 @@ Ce point précise quelques détails de l'implémentation générale sur le proje
 
 ## 3. Récupération des courses depuis la montre
 
-Les fichiers de données `.fit` sont stockés dan sla mémoire interne de la montre GPS. Pour les récupérer, il faut que la montre soit configurer en *USB Mass Storage*, ainsi il suffit de la brancher à un ordinateur pour copier les fichiers `.fit` des activités effectuées. 
+Les fichiers de données `.fit` sont stockés dans la mémoire interne de la montre GPS. Pour les récupérer, il faut que la montre soit configurer en *USB Mass Storage*, ainsi il suffit de la brancher à un ordinateur pour copier les fichiers `.fit` des activités effectuées. 
 
 Avec le package Python **fitparse** et sa classe **FitFile**, nous avons pu récupérer facilement les données contenues dans les fichiers `.fit`.
 Ce fichier contient un certain nombre de points enregistrés chaque seconde (dépend du mode d'enregistrement configuré dans la montre). Chaque point renferme les valeurs suivantes:
@@ -182,26 +182,22 @@ Cette étape d'*inférence* prend un temps relativement important. C'est pourquo
 
 ## 8. Conclusion
 
-**Intéressant de travailler sur ces sets de données
-**Toute la chaine de l'extraction jusqu'à la visualisation est fonctionnelle
-**Temps de traitement assez long
+A ce stade, le projet permet de comparer les différentes courses à pieds effectuées par un utilisateur. Et plus particulièrement de comparer les parties de courses communes à plusieurs activités. L'application trouve et sélectionne les segments les plus pertinents pour une course choisie et, au moyen d'un naviguateur Web, de visualiser les segments. 
 
-A ce stade, ce projet permet de comparer les différentes courses à pieds effectuées par un utilisateur. Et plus particulièrement de comparer les parties de courses communes à plusieurs activités. L'application trouve et sélectionne les segments les plus pertinents pour une course choisie et, au moyen d'un naviguateur Web, de visualiser les segments. 
+L'application se sépare en deux parties distinctes: La partie de recherche de segments et l'outil graphique pour visualiser les courses et les segments. Cela permet d'améliorer et d'ajouter des fonctionnalités à l'une ou l'autre des parties sans être forcé de faire de même sur l'autre. Dès lors, il serait relativement simple d'augmenter le nombre de type de segments automatiqement extrait des courses pour offrir de plus amples possibilités de comparaisons.
 
-L'application se sépare en deux parties distinctes: La partie de recherche de segments et l'outil graphique pour visualiser et comprarer les courses et segments. Cela permet d'améliorer et d'ajouter des fonctionnalités à l'une ou l'autre des parties sans être forcé de faire de même sur l'autre. Dès lors, il serait relativement simple d'augmenter le nombre de type de segments automatiqement extrait des courses pour offrir de plus amples possibilités de comparaisons.
-
+L'extraction des segments requiert un temps relativement long. Ce qui nécessite d'effectuer les étapes de traitement sur les courses et les segments avant d'utiliser l'outil de visualisation. Actuellement, il n'est pas possible d'ajouter une nouvelle course et de pouvoir directement la comparer aux autres. 
 
 
 ## 9. Perspectives d'améliorations
 
-**ajouter des type de segment intéressant 
-**prendre les 5 meilleures segments de chaque type (ex. les 5 meilleures segments de dénivelation) pour chaque course
+Voici quelques perspectives d'améliorations possibles pour compléter ce projet:
 
-** fait d'ajouter une nouvelle course au set de courses 
-
-**mutlithreading pour accélerer les traitements des courses
-
-** Etendre le set de course pour voir si ça fonctionne vraiment bien
+* ajouter d'autres types de segment intéressant basé sur d'autres critères
+* Au lieu de prendre le meilleur segment pour chaque type (longueur, dénivelation, densité), prendre les 3 meilleurs de chaque type
+* Sélectionner les meilleurs segments à partir de plusieurs critères en les combinant
+* Permettre d'ajouter une nouvelle course sans avoir à regénérer les données pour toutes les courses (seulement pour celle qui a été ajoutée)
+* Accélérer les phases d'extraction et d'inférence en améliorant le code et en utilisant du *multithreading*
 
 ## 10. Bibliographie
 
