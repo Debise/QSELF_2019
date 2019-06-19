@@ -35,11 +35,8 @@ class BestSegment:
             dist_start = np.min(segment[3, :])
             dist_stop = np.max(segment[3, :])
             distance = dist_stop - dist_start
-            # print(name, dist_start, dist_stop, distance)
 
             new_all_segments.append(("seg" + str(n), seg))
-
-            # print("max diff", np.max(np.diff(segment[3,:])))
 
             length_dict["seg" + str(n)] = distance
             n += 1
@@ -54,9 +51,7 @@ class BestSegment:
 
         new_all_segments = list(self.all_segments)
 
-        # while(True):
         if 1:
-
             remaining_seg = []
 
             # for (name_1, segment_1) in all_segments:
@@ -64,8 +59,6 @@ class BestSegment:
                 seg_1 = new_all_segments.pop(0)  # pour ne pas faire seg1 vs seg2, PUIS seg2 vs seg1
                 segment_1 = seg_1.positions
                 name_1 = seg_1.times1[0]  # selon convention dans RaceManager density
-                # print(segment_1.shape)
-                # print("aa:",i,len(all_segments))
 
                 for seg_2 in new_all_segments:
                     segment_2 = seg_2.positions
@@ -76,7 +69,6 @@ class BestSegment:
                         print("Egal pass", segment_1.shape, segment_2.shape)
                         continue
 
-                    # print(self.mean_seg_density[name_1], self.mean_seg_density[name_2])
                     if self.mean_seg_density[name_1] < 0.5 or self.mean_seg_density[
                         name_2] < 0.5:  # si les deux densité sont plus grandes que...
                         # print("continue 1")
@@ -84,24 +76,8 @@ class BestSegment:
 
                     segmentComparator = SegmentComparator(seg_1, seg_2)
                     segmentComparator.extract_segment("density")
-                    # Warning the timestamp given by SegmentComparator aren't very relevant!
+                    # Warning the timestamp given by SegmentComparator aren't very relevant! (?)
                     segments = segmentComparator.segments
-
-                    # todo si seg1 & seg2 sont "semblables" --> 1 on garde le plus long, 2 on garde le plus court, 3
-                    #  on garde que le match et delete les 2 primitive .......
-                    # todo Solution 3 si l'on a un bout commun plus grand XX
-
-                    # todo BUT trouver les chemin qui sont soit très long (>200) // soit ceux qui ont été fait + que
-                    #  5 fois et suffisamment long // soit ceux avec le plus de deni ?????
-                    # faire avec la densité (voisine) sur une bonne partie (80%) du chemin --> ___si > que 5 (course
-                    # différente) sur 80% du segment _____par exemple (truc de la moyenne pour améliorer le segment)
-                    # on peut pas tout faire --> indiquer les améliorations possibles
-
-                    # todo utiliser LCSS ou autre pour retirer les segement trop similaire OU OU faire avec un kind of
-                    #  "extract segment"
-
-                    # print(len(segments))
-                    # [print(len(i.points1)) for i in segments if len(i.points1) > 50]
 
                     segments_filtered = [i for i in segments if len(i.points1) > 50]  # todo taille minimum
 
@@ -111,8 +87,6 @@ class BestSegment:
                         continue
 
                     if len(segments_filtered) == 0:
-                        # print(">>",segments_filtered)
-                        # print("-------> LEN == 0")
                         continue
 
                     if segments_filtered[0].positions.shape[1] < 0.7 * segment_1.shape[1] and \
@@ -133,28 +107,18 @@ class BestSegment:
                     segments_with_run_name = [(name, i) for i in segments_filtered]
                     remaining_seg.extend(segments_with_run_name)
 
-                    # todo ~~ garder les plus court avec le plus de densité...
-
-            # print("Remaining segments               :", len(remaining_seg))
-
             # reprocessing on "new" remaining segment
-
             n = 0
             all_segments = []
             for (name, segment) in remaining_seg:
                 all_segments.append(("seg" + str(n), segment))
                 n += 1
 
-            # print(len(all_segments))
 
             density, delta, mean_seg_density = self.density(all_segments)
-
             max_density_seg = max(mean_seg_density, key=lambda k: mean_seg_density[k])
 
-            # print(max_density_seg)
-
             density_segment = [segment for (name, segment) in all_segments if name == max_density_seg][0]
-            # print(density_segment.positions.shape)
 
         self.density_segment = density_segment
         return density_segment
@@ -167,13 +131,9 @@ class BestSegment:
         for seg in self.all_segments:
             segment = seg.positions
 
-            # print(segment.shape)
-            # print(segment[2, :])
-
             derivative = np.diff(segment[2, :])
             derivative[derivative < 0] = 0
             positive_deniv = np.sum(derivative)  # only positive !
-            # print(name, positive_deniv)
 
             new_all_segments.append(("seg" + str(n), seg))
 
@@ -208,9 +168,6 @@ class BestSegment:
     @staticmethod
     def density(seg_list):
 
-        # print(len(seg_list))
-        # seg_list --> list de tuple (run_name, segment_array)
-
         points = np.array(seg_list[0][1].positions[:2, :])
 
         for segment in seg_list[1:]:
@@ -222,7 +179,6 @@ class BestSegment:
                 points = np.append(points, (segment.positions[:2, :]), axis=1)
             except:
                 pass
-                # print("Probably zero size array...")
 
         max_lat = np.max(points[0, :])
         max_long = np.max(points[1, :])
@@ -234,11 +190,7 @@ class BestSegment:
         lat = np.arange(min_lat, max_lat, delta)
         long = np.arange(min_long, max_long, delta)
 
-        # print(lat.shape)
-        # print(long.shape)
-
         density = np.zeros([3, lat.shape[0] * long.shape[0]])  # [lat,long,nbpoint]
-        # print(density.shape)
 
         i = 0
         for x in lat:
@@ -267,9 +219,7 @@ class BestSegment:
 
                 i += 1
 
-        # print("Max seg density :", np.max(density[2, :]))
-
-        # todo repasser tous les segment et ajouter leur propre densité max pour chacun
+        #repasser tous les segment et ajouter leur propre densité max pour chacun
         max_seg_density = dict()
         min_seg_density = dict()
         mean_seg_density = dict()

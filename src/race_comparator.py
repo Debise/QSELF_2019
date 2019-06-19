@@ -74,9 +74,8 @@ class RaceComparator:
         # drop les segments qui ne sont pas très correct (match mais pas de façon continue)
         retour = []
         times_2 = []
-        # print(len(ret),len(times))
+
         for segment, time in zip(segments_filtered, times_filtered):
-            # print(segment.shape)
             diff = np.diff(segment[3, :])
             if np.max(diff) < 50:
                 # valide si moins de 50m entre 2 points

@@ -39,7 +39,6 @@ class RaceInferer:
         matching_race_segment = []
 
         deniv_seg = self.race_manager.best_denivelation_segment[referential_race_name]
-        # print(">> Seg deniv length:", len(deniv_seg.points1))
 
         for race_name in self.race_manager.races:
             if race_name == referential_race_name:
@@ -50,10 +49,8 @@ class RaceInferer:
             matches = self.find_matching_race_segment(race, deniv_seg, "denivelation")
 
             if len(matches) > 0:
-                # print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
 
                 if len(matches) > 1:
-                    # print("Segment matches --> more than 1 fragment")
                     continue
 
                 # TODO apply more restrictive selection/filtering ?
@@ -68,7 +65,6 @@ class RaceInferer:
         matching_race_segment = []
 
         length_seg = self.race_manager.best_length_segment[referential_race_name]
-        # print(">> Seg deniv length:", len(deniv_seg.points1))
 
         for race_name in self.race_manager.races:
             if race_name == referential_race_name:
@@ -79,10 +75,8 @@ class RaceInferer:
             matches = self.find_matching_race_segment(race, length_seg, "length")
 
             if len(matches) > 0:
-                # print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
 
                 if len(matches) > 1:
-                    # print("Segment matches --> more than 1 fragment")
                     continue
 
                 # TODO apply more restrictive selection/filtering ?
@@ -93,11 +87,8 @@ class RaceInferer:
         self.length_segment[referential_race_name] = matching_race_segment
 
     def find_race_density(self, referential_race_name):
-
         matching_race_segment = []
-
         density_seg = self.race_manager.best_density_segment[referential_race_name]
-        # print(">> Seg deniv length:", len(deniv_seg.points1))
 
         for race_name in self.race_manager.races:
             if race_name == referential_race_name:
@@ -108,10 +99,8 @@ class RaceInferer:
             matches = self.find_matching_race_segment(race, density_seg, "density")
 
             if len(matches) > 0:
-                # print(race_name, ">> Seg nb:",len(matches), len(matches[0].points1))
 
                 if len(matches) > 1:
-                    # print("Segment matches --> more than 1 fragment")
                     continue
 
                 # TODO apply more restrictive selection/filtering ?
@@ -175,13 +164,11 @@ class RaceInferer:
 
     def find_matching_race_segment(self, race, best_segment, segment_type):
 
-        # Make a big segment out of a race (heavy but less code...)
+        # Make a big segment out of a race (heavy but less code needed...)
         race_comparator = RaceComparator(race, race)
         race_comparator.extract_segment()
         segments = race_comparator.segments
 
-        # Ckeck if segments is plauible:
-        # print(">> Seg nb:",len(segments), "  length:", len(segments[0].points1))
 
         race_as_segment = segments[0]
 

@@ -92,8 +92,6 @@ class RaceManager:
         min_lat = np.min(points[0, :])
         min_long = np.min(points[1, :])
 
-        # print(max_lat,max_long,min_lat,min_long)
-
         delta = 0.0005  # degré
 
         lat = np.arange(min_lat, max_lat, delta)
@@ -204,7 +202,6 @@ class RaceManager:
 
         filename = os.path.join(st.files["output_folder"], f"seg_density_{referential_race_name}.html")
         gmap3.draw(filename)
-        ###
 
         self.race_segment_density[referential_race_name] = density
         self.race_density_delta[referential_race_name] = delta
@@ -218,7 +215,6 @@ class RaceManager:
 
         # sort by length
         all_segments.sort(key=lambda x: len(x.points1), reverse=True)
-        # [print(len(seg.points1)) for seg in all_segments]
 
         segment_density = self.race_segment_density[referential_race_name]
         mean_seg_density = self.race_mean_seg_density[referential_race_name]
@@ -230,10 +226,6 @@ class RaceManager:
         best_density_segment = bestSegment.get_density_segment()
         best_denivelation_segment = bestSegment.get_denivelation_segment()
         best_length_segment = bestSegment.get_length_segment()
-
-        # print(len(best_denivelation_segment.points1))
-        # print(len(best_length_segment.points1))
-        # print(len(best_density_segment.points1))
 
         self.best_density_segment[referential_race_name] = best_density_segment
         self.best_denivelation_segment[referential_race_name] = best_denivelation_segment

@@ -25,11 +25,11 @@ class SegmentComparator:
         step = 5
         epsilon = 0.00089443
 
-        c1 = self.segment1.positions  # "position_lat", "position_long", "altitude", "distance"
+        c1 = self.segment1.positions
         c2 = self.segment2.positions
 
         c1_matched_c2 = np.zeros(c1.shape[1])
-        mean_trace = np.zeros((4, c1.shape[1]))  # [pos_lat, pos_long, altitude, distance]
+        mean_trace = np.zeros((4, c1.shape[1]))
         timestamps_trace = np.zeros((2, c1.shape[1]), dtype='object')
 
         for i2 in range(0, c2.shape[1] - size, step):
@@ -42,7 +42,7 @@ class SegmentComparator:
 
                     mean_trace[:3, i1:i1 + size] = (c1[0:3, i1:i1 + size] + c2[0:3, i2:i2 + size]) / 2
                     mean_trace[3, i1:i1 + size] = c1[3,
-                                                  i1:i1 + size]  # pour la distance on ne calcule pas la moyenne --> ça fausse tout
+                                                  i1:i1 + size]
 
                     timestamps_trace[:, i1:i1 + size] = [self.segment1.times1[i1:i1 + size],
                                                          self.segment2.times1[i2:i2 + size]]
@@ -64,15 +64,12 @@ class SegmentComparator:
         segments_filtered = [i for i in ret if i.shape[1] > 40]
         times_filtered = [i for i in times if i.shape[1] > 40]
 
-        # drop les segments qui ne sont pas très correct (match mais pas de façon continue)
         retour = []
         times_2 = []
-        # print(len(ret),len(times))
+
         for segment, time in zip(segments_filtered, times_filtered):
-            # print(segment.shape)
             diff = np.diff(segment[3, :])
             if np.max(diff) < 50:
-                # valide si moins de 50m entre 2 points
                 retour.append(segment)
                 times_2.append(time)
 
