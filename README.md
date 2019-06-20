@@ -19,9 +19,9 @@ Common pipenv commands :
 
 ## Usage
 
-For the moment, to run the viewer, you need to :
+To run the viewer, you just need to :
 
- * First be located on the viewer folder.
+ * First be located on the root folder.
  * Then run the command : `pipenv run python run_server.py`
  * You can now access the viewer with the address `127.0.0.1:5000` on your browser.
 

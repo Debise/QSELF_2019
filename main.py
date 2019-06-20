@@ -6,11 +6,9 @@ from multiprocessing import cpu_count, Pool
 import gmplot
 import numpy as np
 
-
 if __name__ == '__main__':
 
-
-    ### Process & Inference flags ###
+    # Process & Inference flags
     process_all_race = 0
     infer_all = 0
 
@@ -30,7 +28,7 @@ if __name__ == '__main__':
         race_manager.read_all_races()
 
         number_of_races = len(list(race_manager.races.keys()))
-        i=0
+        i = 0
         print("Number of races to process :", number_of_races)
 
         for race_name in race_manager.races:
@@ -49,7 +47,7 @@ if __name__ == '__main__':
 
         print("Infer all races")
 
-        i = 0 
+        i = 0
         race_inferer = RaceInferer()
 
         for race_name in race_inferer.race_manager.races:
@@ -65,18 +63,14 @@ if __name__ == '__main__':
             race_inferer.draw_length_segment(race_name)
 
         race_inferer.save()
-        
 
-    #####
-    
-    
-    #ref_race = "2018-12-20-16-42-55" 
+    # ref_race = "2018-12-20-16-42-55"
     ref_race = "2019-03-25-17-24-10"
 
     race_inferer_wrapper = RaceInfererWrapper()
 
     # To get statistics of a best segment: 
-    #print(race_inferer.get_statistics_from_deniv_seg(ref_race))
+    # print(race_inferer.get_statistics_from_deniv_seg(ref_race))
 
     # Check the "inference"
     deniv, length, density = race_inferer_wrapper.get_best_segment(ref_race)
@@ -95,6 +89,3 @@ if __name__ == '__main__':
     # print("These matching reaces are :", [race_name for (race_name, seg) in length])
     # print("Segment.type for best devi. seg. :", [seg.segment_type for (race_name, seg) in length])
     # print("")
-
-
-

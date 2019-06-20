@@ -1,7 +1,6 @@
 from src.segment_comparator import SegmentComparator
 from src.race_comparator import RaceComparator
 from src.race_manager import RaceManager
-from src.segment import Segment
 import settings as st
 import pickle
 from gmplot import GoogleMapPlotter
@@ -168,7 +167,6 @@ class RaceInferer:
         race_comparator = RaceComparator(race, race)
         race_comparator.extract_segment()
         segments = race_comparator.segments
-
 
         race_as_segment = segments[0]
 

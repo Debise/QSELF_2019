@@ -49,8 +49,8 @@ class RaceComparator:
                     c1_matched_c2[i1:i1 + size] += 1
 
                     mean_trace[:3, i1:i1 + size] = (c1[1:4, i1:i1 + size] + c2[1:4, i2:i2 + size]) / 2
-                    mean_trace[3, i1:i1 + size] = c1[4,
-                                                  i1:i1 + size]  # pour la distance on ne calcule pas la moyenne --> ça fausse tout
+                    # pour la distance on ne calcule pas la moyenne --> ça fausse tout
+                    mean_trace[3, i1:i1 + size] = c1[4, i1:i1 + size]
 
                     timestamps_trace[:, i1:i1 + size] = [c1[0, i1:i1 + size], c2[0, i2:i2 + size]]
 
@@ -87,7 +87,8 @@ class RaceComparator:
             positions = seg[0]
             timestamps1 = seg[1][0]
             timestamps2 = seg[1][1]
-            self.segments.append(Segment(positions, timestamps1, timestamps2, self.race1.points, self.race2.points, "primitive"))
+            self.segments.append(
+                Segment(positions, timestamps1, timestamps2, self.race1.points, self.race2.points, "primitive"))
 
     def draw(self):
         if GOOGLE_MAP_API_KEY is None:
