@@ -37,9 +37,9 @@ class RaceInfererWrapper:
         else:
             gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
 
-        gmap3.plot(referential_race.df.position_lat, referential_race.df.position_long, 'green',
+        gmap3.plot(referential_race.df.position_lat, referential_race.df.position_long, 'cornflowerblue',
                    edge_width=2.5)
-        gmap3.plot(comparison_race.df.position_lat, comparison_race.df.position_long, 'cornflowerblue',
+        gmap3.plot(comparison_race.df.position_lat, comparison_race.df.position_long, 'limegreen',
                    edge_width=2.5)
 
         segment.draw('red', gmap3)

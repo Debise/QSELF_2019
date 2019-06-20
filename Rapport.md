@@ -30,7 +30,7 @@ Le but de ce projet est d'extraire les segments les plus interéssants à partir
 
 Avec la liste de segments d'une course, on extrait trois types de segments :
 
-* le segment avec le plus de dénivelation positive
+* le segment avec le plus de dénivellation positive
 * le segment le plus long
 * le segment avec la densité moyenne de segment la plus haute
 
@@ -194,7 +194,7 @@ L'extraction des segments requiert un temps relativement long. Ce qui nécessite
 Voici quelques perspectives d'améliorations possibles pour compléter ce projet:
 
 * ajouter d'autres types de segment intéressant basé sur d'autres critères
-* Au lieu de prendre le meilleur segment pour chaque type (longueur, dénivelation, densité), prendre les 3 meilleurs de chaque type
+* Au lieu de prendre le meilleur segment pour chaque type (longueur, dénivellation, densité), prendre les 3 meilleurs de chaque type
 * Sélectionner les meilleurs segments à partir de plusieurs critères en les combinant
 * Permettre d'ajouter une nouvelle course sans avoir à regénérer les données pour toutes les courses (seulement pour celle qui a été ajoutée)
 * Accélérer les phases d'extraction et d'inférence en améliorant le code et en utilisant du *multithreading*

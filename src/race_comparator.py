@@ -96,7 +96,7 @@ class RaceComparator:
             gmap3 = GoogleMapPlotter(46.98, 6.89, 14, apikey=GOOGLE_MAP_API_KEY)
 
         self.race1.draw(color='cornflowerblue', gmap3=gmap3)
-        self.race2.draw(color='green', gmap3=gmap3)
+        self.race2.draw(color='limegreen', gmap3=gmap3)
 
         # Plot segment
         for segment in self.segments:
