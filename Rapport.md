@@ -3,7 +3,6 @@
 
 ## HES-SO MSE 
 
-
 Pedro Costa & Louis Delabays
 
 ---
@@ -12,7 +11,7 @@ Pedro Costa & Louis Delabays
 
 Dans le cadre du cours *Quantified Self*, il nous a été demandé de réaliser un projet en relation avec les thèmes vus durant le semestre. 
 
-Notre projet a pour but de fournir un moyen de comparer des courses à pieds de manière un peu similaire à l'application **Strava**. Avec Strava, les segments ont été définis par un utilisateur qui a choisi un point de départ et un point d'arrivé d'une portion de sa course qu'il trouvait intéressant. Ensuite, pour chaque nouvelle course l'application détecte les portions qui correpsondent à un segment. Finalement, nous avons la possibilité de comparer nos différents efforts sur ce segment ou de se comparer avec d'autres athlètes.
+Notre projet a pour but de fournir un moyen de comparer des courses à pieds de manière un peu similaire à l'application **Strava**. Avec Strava, les segments ont été définis par un utilisateur qui a choisi un point de départ et un point d'arrivé d'une portion de sa course qu'il trouvait intéressant. Ensuite, pour chaque nouvelle course l'application détecte les portions qui correspondent à un segment. Finalement, nous avons la possibilité de comparer nos différents efforts sur ce segment ou de se comparer avec d'autres athlètes.
 
 Ce que nous voulons réaliser est un peu différent: Notre application trouvera d'elle même les segments intéressants sans l'intervention de l'utilisateur. Plusieurs courses à pieds seront fournies à l'application pour qu'elle trouve les portions communes des différentes courses à pieds. L'utilisateur pourra ensuite visualiser les courses et comparer les segments communs. Le descriptions complètes et détaillées du projet se trouve au chapitre suivant (*2. Description et but*).
 
@@ -26,7 +25,7 @@ Pour utiliser le projet il faut se référer au fichier **README.md** à la raci
 
 ### 2.1 But du projet
 
-Le but de ce projet est d'extraire les segments les plus interéssants à partir des courses à pied mise à disposition par un utilisateur. Dans un premier temps, toutes les courses sont confrontées à toutes les autres. Cette phase permet d'obtenir une liste de segments pour chaque course (chap. *4. Extraction des segments*). 
+Le but de ce projet est d'extraire les segments les plus intéressants à partir des courses à pied mise à disposition par un utilisateur. Dans un premier temps, toutes les courses sont confrontées à toutes les autres. Cette phase permet d'obtenir une liste de segments pour chaque course (chap. *4. Extraction des segments*). 
 
 Avec la liste de segments d'une course, on extrait trois types de segments :
 
@@ -34,9 +33,9 @@ Avec la liste de segments d'une course, on extrait trois types de segments :
 * le segment le plus long
 * le segment avec la densité moyenne de segment la plus haute
 
-Après avoir obtenu ces trois segments, il est possible d'effectuer  "l'inférence" d'une course. Cette étape consiste à trouver les autres courses disponibles qui passent aussi par l'un de ces trois segments. Nous avons appelé ça des *match*.
+Après avoir obtenu ces trois segments, il est possible d’effectuer "l'inférence" d'une course. Cette étape consiste à trouver les autres courses disponibles qui passent aussi par l'un de ces trois segments. Nous avons appelé ça des *match*.
 
-La dernière étape n'est autre que la visualition et la comparaison de la course de référence avec les courses qui ont matché un segment d'intérêts. 
+La dernière étape n'est autre que la visualisation et la comparaison de la course de référence avec les courses qui ont matché un segment d'intérêts. 
 
 ### 2.2 Description
 
@@ -44,9 +43,9 @@ Ce point précise quelques détails de l'implémentation générale sur le proje
 
 * L'extraction des segments et l'inférence des courses requiert un temps de calcul passablement long (la complexité pour effectuer des comparaison *all vs all* est élevée). Pour éviter de devoir patienter pour visualiser les courses, les objets qui contiennent les données traitées sont enregistrés dans des fichiers *pickle*. Ce qui permet de les charger rapidement.
 
-* L'ajout d'une nouvelle course parmis celle déjà à disposition nécessite de régénérer les listes de segments pour chaque course ou du moins partiellement. Ce cas d'utilisation, qui correspond à l'usage principale d'une telle application, n'est pas optimiser et n'a pas été testé durant le réalisation de ce projet.
+* L'ajout d'une nouvelle course parmi celle déjà à disposition nécessite de régénérer les listes de segments pour chaque course ou du moins partiellement. Ce cas d'utilisation, qui correspond à l'usage principale d'une telle application, n'est pas optimiser et n'a pas été testé durant la réalisation de ce projet.
 
-* La génération des fichiers *html* par le package *gmplot* de Google nécessite une *API key* pour visualiser correctement les cartes. Le script Python vérifie si la variable d'environnement de cette clé est vide ou pas et construit les objets (GoogleMapPlotter) en conséquence. Si elle n'est pas présente, c'est le mode développeur qui s'affiche: Les cartes sont un peu grisée et un filigrane est appliqué.
+* La génération des fichiers *html* par le package *gmplot* de Google nécessite une *API key* pour visualiser correctement les cartes. Le script Python vérifie si la variable d'environnement de cette clé est vide ou pas et construit les objets (GoogleMapPlotter) en conséquence. Si elle n'est pas présente, c'est le mode développeur qui s’affiche : Les cartes sont un peu grisée et un filigrane est appliqué.
 
 ### 2.3 Architecture logicielle
 
@@ -66,7 +65,7 @@ Voici pour la suite une liste d'explications des autres classes :
 
 * `Race Inferer Wrapper` : La classe `Race Inferer` étant compliquée avec beaucoup de fonctions utilitaires, nous avons décidé de créer un wrapper qui utiliserait ces fonctions afin de les regrouper en un seul endroit. De cette manière, nous récupérons très facilement les informations nécessaires à afficher sur l'application web.
 * `Segment Comparator` : Permet de comparer deux segments.
-* `Race Comparator`: Permet de comparer deux courses entre elles et d'en tirer les segments communs. Il contient également une fonction permettant de dessiner les deux courses comparées et les segments trouvés.
+* `Race Comparator` : Permet de comparer deux courses entre elles et d'en tirer les segments communs. Il contient également une fonction permettant de dessiner les deux courses comparées et les segments trouvés.
 * `Segment` : Nous avons mis en place une classe segment qui contient les données des deux courses parentes ainsi que ses propres points moyennés. Elle contient également une fonction retournant les statistiques des courses parentes sur le tronçon du segment.
 * `Best Segment` : Détermine quels sont les meilleurs segments de comparaison en fonction d'une course référente. On y classe ici les trois types différents de segments.
 * `Race` : Classe qui va extraire les données des fichiers `.fit` faire la conversion de ces données en dataframes ainsi qu'en liste de `Point`. Une fonction retournant les statistiques de la course est également disponible.
@@ -100,11 +99,10 @@ Ce fichier contient un certain nombre de points enregistrés chaque seconde (dé
 * `temperature` : température
 * `fractional_cadence` : (?) Valeur soit 0, soit 0.5
 
+Pour nos besoins, nous avons changé l'organisation des données des activité afin de simplifier leurs utilisations. Nous avons 2 manières de stocker les activités pour les exploiter ensuite :
 
-Pour nos besoins, nous avons changé l'organisation des données des activité afin de simplifier leurs utlisations. Nous avons 2 manières de stocker les activités pour les exploiter ensuite:
-
-* en liste d'objet `Point` (nous avons créer la classe Point)
-* en Dataframe Pandas
+* En liste d'objet `Point` (nous avons créé la classe Point)
+* En Dataframe Pandas
 
 Et finalement, une classe `Race` contient les 2 représentations de l'activité. Toutes les activités sont stockées dans une classe `RaceManager` dont les autres fonctionnalités sont détaillées par la suite. 
 
@@ -112,69 +110,67 @@ Et finalement, une classe `Race` contient les 2 représentations de l'activité.
 
 ### 4.1 Comparaison des courses (deux à deux)
 
-Pour trouver les portions communes entre deux courses, nous avons implémenté plusieurs classes qui permettent d'effectuer ces opérations. Dans un premier temps, nous avons cherché des librairies pour trouver les plus longues portions communes. Par exemple, l'algorithme LCSS (Longest Common Subsequence) qui est utilisé pour trouver des mots/pharses à partir de lettre ou de phonèmes. Malheureusement, les seuls implémentations trouvées pour des trajectoires en deux dimensons ne permettaient pas de faire le traitment que nous avions besoin. En effet, les coordonnées GPS des différentes courses à pieds sont toutes diffférentes. Par conséquent, il faut que nous puissions définir une *tolérance* pour laquelle nous considérons que les coordonnées sont tout de même *identiques*.
+Pour trouver les portions communes entre deux courses, nous avons implémenté plusieurs classes qui permettent d'effectuer ces opérations. Dans un premier temps, nous avons cherché des librairies pour trouver les plus longues portions communes. Par exemple, l'algorithme LCSS (Longest Common Subsequence) qui est utilisé pour trouver des mots/pharses à partir de lettre ou de phonèmes. Malheureusement, les seules implémentations trouvées pour des trajectoires en deux dimensions ne permettaient pas de faire le traitement que nous avions besoin. En effet, les coordonnées GPS des différentes courses à pieds sont toutes différentes. Par conséquent, il faut que nous puissions définir une *tolérance* pour laquelle nous considérons que les coordonnées sont tout de même *identiques*.
 
-Afin d'extraire les portions communes entre deux courses, nous avons travaillé avec des fenêtres de dix points à la fois: On prend les dix premiers points de la courses de références que l'on compare avec ceux de la deuxième course. Ensuite, on fait avancer le fenêtre de dix points de la deuxième course et l'on compare à nouveau avec la course de référence. Les figures ci-dessous illustrent ce processus:
+Afin d'extraire les portions communes entre deux courses, nous avons travaillé avec des fenêtres de dix points à la fois : On prend les dix premiers points de la course de références que l'on compare avec ceux de la deuxième course. Ensuite, on fait avancer la fenêtre de dix points de la deuxième course et l'on compare à nouveau avec la course de référence. Les figures ci-dessous illustrent ce processus :
 
 ![](ressource_rapport/segment_1.png)
 
-Une fois que la première fenêtre est passée devant toute la deuxième course, on l'avance de cinq points (cette valeur a été trouvée par essais; avancer de plusieurs points permet de diminuer le temps de calculs). Pour la simplicité de l'explication, la fenêtre n'est avancer que d'un point dans ces figures:
+Une fois que la première fenêtre est passée devant toute la deuxième course, on l'avance de cinq points (cette valeur a été trouvée par essais ; avancer de plusieurs points permet de diminuer le temps de calculs). Pour la simplicité de l'explication, la fenêtre n'est avancée que d'un point dans ces figures :
 
 ![](ressource_rapport/segment_2.png)
 
-Pour définir qu'une fenêtre *matche* avec l'autre course, les dix distances points-à-points sont sommées et si elle est inférieur à un seuil, alors on stocke le fenêtre de dix points. Pour extraire les segments, on sépare les parties continues et discontinues: 
+Pour définir qu'une fenêtre *matche* avec l'autre course, les dix distances points-à-points sont sommées et si elle est inférieure à un seuil, alors on stocke la fenêtre de dix points. Pour extraire les segments, on sépare les parties continues et discontinues : 
 
 ![](ressource_rapport/multi_seg.png)
 
 *Les deux courses sont en vert et en bleu. La trajectoire commune est en rouge*
 
-Pour ce faire, on parcourt les points de la trajectoire commune et on contrôle s'ils proviennent d'indices successifs de la première course. Lorsqu'ils ne sont pas successifs, on *split* en deux parties et ainsi de suite. On obtient une liste de portions communes aux deux courses. Pour améliorer les étapes suivantes, les trajectoires communes sont moyennées:
+Pour ce faire, on parcourt les points de la trajectoire commune et on contrôle s'ils proviennent d'indices successifs de la première course. Lorsqu'ils ne sont pas successifs, on *split* en deux parties et ainsi de suite. On obtient une liste de portions communes aux deux courses. Pour améliorer les étapes suivantes, les trajectoires communes sont moyennées :
 
 ![](ressource_rapport/traj_mean.png)
 
 *Les deux courses sont en vert et en bleu. La trajectoire commune moyennée est en rouge*
 
-Finalement, les portions communes sont transformées en objet `Segment` qui contient les points des courses sources et la trajectoire moyennées. Cette objet permet également de retrouver les deux courses qui ont permis de trouver ce segment.
-
+Finalement, les portions communes sont transformées en objet `Segment` qui contient les points des courses sources et la trajectoire moyennées. Cet objet permet également de retrouver les deux courses qui ont permis de trouver ce segment.
 
 ### 4.2 Au niveau de l'application
 
-La procédure décrite au *point 4.1* est effectuée dans l'application pour chaque course contre toutes les autres courses. Ainsi, dans l'objet `RaceManager`, il y a un dictionnaire avec une clé par course qui contient une liste de tous les segments trouvées pour cette clé. Cette liste de segments en contient souvent plusieurs dizaines et ils sont pour la plupart très similaire. L'étape de traitement suivante extrait, parmis les segments de la liste, les plus pertinents selon plusieurs critères.
+La procédure décrite au *point 4.1* est effectuée dans l'application pour chaque course contre toutes les autres courses. Ainsi, dans l'objet `RaceManager`, il y a un dictionnaire avec une clé par course qui contient une liste de tous les segments trouvés pour cette clé. Cette liste de segments en contient souvent plusieurs dizaines et ils sont pour la plupart très similaire. L'étape de traitement suivante extrait, parmi les segments de la liste, les plus pertinents selon plusieurs critères.
 
 ## 5. Recherche des segments pertinents
 
-Etant donné le nombre trop important de segments trouvés pour chaque course (chapitre précédent), nous avons décidé de nous focaliser sur trois types de segments, à savoir le segment le plus long, celui avec le plus de dévivelation positive et celui avec la densité moyenne la plus élevée.
+Étant donné le nombre trop important de segments trouvés pour chaque course (chapitre précédent), nous avons décidé de nous focaliser sur trois types de segments, à savoir le segment le plus long, celui avec le plus de dénivellation positive et celui avec la densité moyenne la plus élevée.
 
-Pour extraire les segments les plus pertinents pour chaque type, nous avons implémenté la classe `BestSegment`. Ensuite, les meilleures segments de chaque type sont stockés dans le `RaceManager`.
+Pour extraire les segments les plus pertinents pour chaque type, nous avons implémenté la classe `BestSegment`. Ensuite, les meilleurs segments de chaque type sont stockés dans le `RaceManager`.
 
 ### 5.1 Segment avec le plus de dénivellation
 
-Pour extraire ce type de segment parmis la liste de segments d'une course, il faut effectuer un peu de traitement sur les données d'altitude. Tout d'abord, on applique la dérivé (discrète) sur les altitudes de la course (`np.diff(...)`). Etant donné que l'on cherche la dénivellation positive (la montée, pas la descente), on met toutes les valeurs négatives de la dérivée à zéro. Et finalement, on somme toutes les valeurs (`np.sum(...)`). Ainsi, on obtient le dénivelé positif du segment.
+Pour extraire ce type de segment parmi la liste de segments d'une course, il faut effectuer un peu de traitement sur les données d'altitude. Tout d'abord, on applique la dérivé (discrète) sur les altitudes de la course (`np.diff(...)`). Étant donné que l'on cherche la dénivellation positive (la montée, pas la descente), on met toutes les valeurs négatives de la dérivée à zéro. Et finalement, on somme toutes les valeurs (`np.sum(...)`). Ainsi, on obtient le dénivelé positif du segment.
 
 On cherche le segment avec le dénivelé positif le plus important.
 
-
 ### 5.2 Segment le plus long
 
-Ce segment est le plus simple à trouver parmis les trois types de segment à extraire. On cherche le segment dont la différence entre la `distance` de fin et celle du début est la plus grande. En effet on ne peut pas se baser sur le nombre de points enregistrés par la montre, car celle-ci effectue une mesure environ chaque seconde et pas en fonction de la distance.
+Ce segment est le plus simple à trouver parmi les trois types de segment à extraire. On cherche le segment dont la différence entre la `distance` de fin et celle du début est la plus grande. En effet on ne peut pas se baser sur le nombre de points enregistrés par la montre, car celle-ci effectue une mesure environ chaque seconde et pas en fonction de la distance.
 
 ### 5.3 Segment avec le plus de densité moyenne
 
-Ce dernier type de segment est celui qui nécessite le plus d'opérations et de temps à l'extraction. Mais c'est aussi un segment très intéressant car, normalement, un nombre plus important de courses vont matcher avec lui. Donc, cela permet de le comparer avec un plus grand nombre d'efforts différents du même utiliateurs.
+Ce dernier type de segment est celui qui nécessite le plus d'opérations et de temps à l'extraction. Mais c'est aussi un segment très intéressant car, normalement, un nombre plus important de courses vont matcher avec lui. Donc, cela permet de le comparer avec un plus grand nombre d'efforts différents du même utilisateur.
 
 La première étape consiste à créer une *density map* pour chaque course à partir de tous les segments trouvés au chapitre 4. Pour cela, on subdivise toute la surface rectangulaire que prennent les segments en petites zones rectangulaires.
 
-En parcourant ces zones, on compte le nombre de segment différents compris dans chaque zone. On obtient une carte de densité des segments pour une course données. Voici le résultat pour une course (ici seules les densités supérieures à 2 sont affichées):
+En parcourant ces zones, on compte le nombre de segment différents compris dans chaque zone. On obtient une carte de densité des segments pour une course données. Voici le résultat pour une course (ici seules les densités supérieures à 2 sont affichées) :
 
 ![](ressource_rapport/density_map.png)
 
-*La trajectoire de la course est en bleu et la densité de chaques zones est représentée par le diamètre des cercles jaunes*
+*La trajectoire de la course est en bleu et la densité de chaque zone est représentée par le diamètre des cercles jaunes*
 
-Pour chaque segment, on extrait diverses valeurs, comme par exemple:
+Pour chaque segment, on extrait diverses valeurs, comme par exemple :
 
-* la densité **minimum** 
-* la densité **maximale**
-* la densité **moyenne**
+* La densité **minimum** 
+* La densité **maximale**
+* La densité **moyenne**
 
 Après plusieurs essais, il a été constaté que la densité moyenne d'un segment est la mesure la plus utile pour trouver le segment par lequel passe le plus grand nombre de courses différentes. 
 
@@ -184,16 +180,15 @@ Illustration du segment avec la plus grand densité moyenne pour une course :
 
 *Le segment avec la plus grande densité moyenne est en rouge*
 
-
 ## 6. Recherche des courses avec segments communs
 
-Grâce à l'étape précédente (chapitre 5), nous disposons du meilleure segment de chaque type pour les différentes courses. Dans cette dernière étape de traitement, il s'agit d'effectuer l'*inférence* des courses selon leurs meilleures segments. Cela consiste à :
+Grâce à l'étape précédente (chapitre 5), nous disposons du meilleur segment de chaque type pour les différentes courses. Dans cette dernière étape de traitement, il s'agit d'effectuer l'*inférence* des courses selon leurs meilleures segments. Cela consiste à :
 
 1. Choisir une course à *inférer*
 2. A partir des segments pertinents, trouver les courses qui matches ces segments
 3. Stocker les matches pour pouvoir les comparer / visualiser par la suite
 
-**Remarque:** Les segments ont initialement été trouvés en cherchant les portions communes de deux courses. Mais lors de l'*inférence*, il est fréquent de trouver d'autres courses que celles d'origines qui matchent également un segment. Typiquement, le segment avec la meilleure densité moyenne permet de comparer un nombre plus importants d'efforts différents.
+**Remarque: ** Les segments ont initialement été trouvés en cherchant les portions communes de deux courses. Mais lors de l'*inférence*, il est fréquent de trouver d'autres courses que celles d'origines qui matchent également un segment. Typiquement, le segment avec la meilleure densité moyenne permet de comparer un nombre plus important d'efforts différents.
 
 Cette étape d'*inférence* prend un temps relativement important. C'est pourquoi, la classe `RaceInferer` permet de stocker les données après le traitement / inférence. Ainsi, notre outil de visualisation peut simplement reprendre les données préprocessées pour les afficher selon la volonté de l'utilisateur.
 
@@ -201,7 +196,7 @@ Cette étape d'*inférence* prend un temps relativement important. C'est pourquo
 
 Maintenant que nous avons fait une extraction correcte de toutes les courses et des segments de comparaisons correspondants. Il nous faut mettre en place un moyen de les visualiser. Vu que nous avons réalisé l'entièreté de notre code en python, la solution la plus logique pour rapidement mettre en place une application web se trouve être le microframework Flask.
 
-Notre application de visualisation est fonctionnelles sur Safari, Chrome et Firefox.
+Notre application de visualisation est fonctionnelle sur Safari, Chrome et Firefox.
 
 ### Backend Flask (API)
 
@@ -329,7 +324,3 @@ Voici quelques perspectives d'améliorations possibles pour compléter ce projet
 * Sélectionner les meilleurs segments à partir de plusieurs critères en les combinant
 * Permettre d'ajouter une nouvelle course sans avoir à régénérer les données pour toutes les courses (seulement pour celle qui a été ajoutée)
 * Accélérer les phases d'extraction et d'inférence en améliorant le code et en utilisant du *multithreading*
-
-## 10. Bibliographie
-
----
